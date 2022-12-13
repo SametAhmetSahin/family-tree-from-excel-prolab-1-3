@@ -16,18 +16,27 @@ public class Main
 
         ArrayList<PersonData> test = ExcelParser.parse("test.xlsx", 0);
 
-        System.out.println(test.get(0).id + " " + test.get(0).mother_name);
-
-        ArrayList<Person> peeps = new ArrayList<>();
+        //System.out.println(test.get(0).id + " " + test.get(0).mother_name);
 
         for(PersonData data : test)
-            peeps.add(new Person(data));
+            System.out.println(data.id + " - " + data.name + " " + data.surname);
+
+        System.out.println();
 
         Node tree = new Node();
 
-        for(Person person : peeps)
-            tree.AddPerson(person.data);
+        for(PersonData data : test)
+            tree.AddPerson(data);
 
-        System.out.println("Tree constructed.");
+        System.out.println("\nTree constructed.\n");
+
+        System.out.println("Ailenin başı:\n" + tree.rootNode.data.id + " - " + tree.rootNode.data.name + " " + tree.rootNode.data.surname);
+        System.out.println("Eşi: " + tree.rootNode.wife.data.id + " - " + tree.rootNode.wife.data.name + " " + tree.rootNode.wife.data.surname);
+
+        tree.FindPeopleWithNoChildrenRecursive(tree.rootNode);
+
+        System.out.println("\nÇocuksuzlar:");
+        for(Person childlessPerson : tree.peepsWithNoChildren)
+            System.out.println(childlessPerson.data.id + " - " + childlessPerson.data.name + " " + childlessPerson.data.surname);
     }
 }

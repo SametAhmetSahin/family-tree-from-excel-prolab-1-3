@@ -27,7 +27,7 @@ public class ExcelParser
         XSSFSheet sheet = wb.getSheetAt(sheet_index);
         ArrayList<PersonData> personDataArrayList = new ArrayList<>();
 
-        for (int i = 1; i < sheet.getLastRowNum(); i++)
+        for (int i = 1; i <= sheet.getLastRowNum(); i++)
         {
             Row row = sheet.getRow(i);
             PersonData data = new PersonData();

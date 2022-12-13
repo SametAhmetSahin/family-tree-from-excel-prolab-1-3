@@ -2,10 +2,13 @@ package Tree;
 
 import Person.*;
 
+import java.util.ArrayList;
+
 public class Node
 {
     public int nodeID;
     public Person rootNode;
+    public ArrayList<Person> peepsWithNoChildren = new ArrayList<>();
 
     public void AddPerson(PersonData personDataToAdd)
     {
@@ -24,32 +27,57 @@ public class Node
         if(root.wife == null && personDataToAdd.name.equals(divided[0]) && (divided.length > 1 ? personDataToAdd.surname.equals(divided[divided.length - 1]) : true))
         {
             root.wife = new Person(personDataToAdd, root);
+            System.out.println("Eş eklendi.");
             return root;
         }
 
         // Kökün eşi varsa ve eklenecek kişinin anne-baba adı köke ve eşine uyuyorsa çocuk olarak ekle.
-        else if(root.wife != null)
+        // Eş kontrolü geçici olarak kaldırıldı.
+        if(/*root.wife != null*/true)
         {
-            if ((root.data.gender ? personDataToAdd.father_name.equals(root.data.name) : personDataToAdd.mother_name.equals(root.data.name)) &&
-                    (root.wife.data.gender ? personDataToAdd.father_name.equals(root.wife.data.name) : personDataToAdd.mother_name.equals(root.wife.data.name)))
+            if(root.data.gender)
             {
-                root.children.add(new Person(personDataToAdd, (root.data.gender ? root.wife : root), (root.data.gender ? root : root.wife)));
-                return root;
+                if(personDataToAdd.father_name.equals(root.data.name) /*&& personDataToAdd.mother_name.equals(root.wife.data.name)*/)
+                {
+                    root.children.add(new Person(personDataToAdd, root.wife, root));
+                    System.out.println("Çocuk eklendi.");
+                    return root;
+                }
+            }
+            else
+            {
+                if(/*personDataToAdd.father_name.equals(root.wife.data.name) &&*/ personDataToAdd.mother_name.equals(root.data.name))
+                {
+                    root.children.add(new Person(personDataToAdd, root, root.wife));
+                    System.out.println("Çocuk eklendi.");
+                    return root;
+                }
             }
         }
 
         // Eklenecek kişinin bilgileri mevcut köke uymuyorsa çocukları dolaş.
-        else
+        for(int i = 0; i < root.children.size(); i++)
         {
-            for(int i = 0; i < root.children.size(); i++)
-                root.children.set(i, AddPersonRecursive(root.children.get(i), personDataToAdd));
-
-            // Ayrıca IntelliJ IDEA bu for döngüsü yerine aşağıdakini öneriyor:
-            // root.children.replaceAll(person -> AddPersonRecursive(person, personDataToAdd));
-
-            return root;
+            Person pers = AddPersonRecursive(root.children.get(i), personDataToAdd);
+            root.children.set(i, pers);
         }
 
+        // Ayrıca IntelliJ IDEA bu for döngüsü yerine aşağıdakini öneriyor:
+        // root.children.replaceAll(person -> AddPersonRecursive(person, personDataToAdd));
+
         return root;
+    }
+
+    // Depth first mantığıyla çocuksuzları bulup ArrayListe ekliyoruz.
+    public void FindPeopleWithNoChildrenRecursive(Person root)
+    {
+        if(root.children.isEmpty())
+            peepsWithNoChildren.add(root);
+
+        else
+        {
+            for(Person person : root.children)
+                FindPeopleWithNoChildrenRecursive(person);
+        }
     }
 }

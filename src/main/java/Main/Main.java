@@ -11,32 +11,47 @@ public class Main
 {
     public static void main(String[] args) throws IOException
     {
+        String filePath = "test.xlsx";
+
         System.out.println("Hello world!");
         System.out.println(System.getProperty("user.dir"));
 
-        ArrayList<PersonData> test = ExcelParser.parse("test.xlsx", 0);
+        //ArrayList<PersonData> peopleList = ExcelParser.parse(filePath, 0);
+        ArrayList<PersonData> peopleList = ExcelParser.parseAll(filePath);
+        ArrayList<PersonData> familyRootList = ExcelParser.GetFamilyRoots(filePath);
+        ArrayList<ArrayList<PersonData>> membersOfFamilies = new ArrayList<>();
+        ArrayList<Node> families = new ArrayList<>();
 
-        //System.out.println(test.get(0).id + " " + test.get(0).mother_name);
-
-        for(PersonData data : test)
+        for(PersonData data : peopleList)
             System.out.println(data.id + " - " + data.name + " " + data.surname);
 
         System.out.println();
 
-        Node tree = new Node();
+        for(int i = 0; i < ExcelParser.GetFamilyCount(filePath); i++)
+        {
+            families.add(new Node());
+            membersOfFamilies.add(new ArrayList<>());
+            membersOfFamilies.get(i).addAll(ExcelParser.parse(filePath, i));
+        }
 
-        for(PersonData data : test)
-            tree.AddPerson(data);
+        for(int i = 0; i < families.size(); i++)
+        {
+            for(PersonData data : membersOfFamilies.get(i))
+                families.get(i).AddPerson(data);
+        }
 
-        System.out.println("\nTree constructed.\n");
+        System.out.println("\nAğaçlar konstıraktır edildi.\n");
 
-        System.out.println("Ailenin başı:\n" + tree.rootNode.data.id + " - " + tree.rootNode.data.name + " " + tree.rootNode.data.surname);
-        System.out.println("Eşi: " + tree.rootNode.wife.data.id + " - " + tree.rootNode.wife.data.name + " " + tree.rootNode.wife.data.surname);
+        for(Node family : families)
+        {
+            System.out.println("\n\n" + family.rootNode.data.surname + " ailesinin başı: " + family.rootNode.data.name + " " + family.rootNode.data.surname);
+            //System.out.println("Eşi: " + family.rootNode.wife.data.name + " " + family.rootNode.wife.data.surname);
 
-        tree.FindPeopleWithNoChildrenRecursive(tree.rootNode);
+            family.FindPeopleWithNoChildrenRecursive(family.rootNode);
 
-        System.out.println("\nÇocuksuzlar:");
-        for(Person childlessPerson : tree.peepsWithNoChildren)
-            System.out.println(childlessPerson.data.id + " - " + childlessPerson.data.name + " " + childlessPerson.data.surname);
+            System.out.println("\nÇocuksuzlar:");
+            for(Person childlessPerson : family.peepsWithNoChildren)
+                System.out.println(childlessPerson.data.id + " - " + childlessPerson.data.name + " " + childlessPerson.data.surname);
+        }
     }
 }

@@ -2,7 +2,7 @@ package Main;
 
 import Parser.ExcelParser;
 import Person.*;
-import Tree.Node;
+import Tree.Family;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class Main
         ArrayList<PersonData> peopleList = ExcelParser.parseAll(filePath);
         ArrayList<PersonData> familyRootList = ExcelParser.GetFamilyRoots(filePath);
         ArrayList<ArrayList<PersonData>> membersOfFamilies = new ArrayList<>();
-        ArrayList<Node> families = new ArrayList<>();
+        ArrayList<Family> families = new ArrayList<>();
 
         for(PersonData data : peopleList)
             System.out.println(data.id + " - " + data.name + " " + data.surname);
@@ -29,7 +29,7 @@ public class Main
 
         for(int i = 0; i < ExcelParser.GetFamilyCount(filePath); i++)
         {
-            families.add(new Node());
+            families.add(new Family());
             membersOfFamilies.add(new ArrayList<>());
             membersOfFamilies.get(i).addAll(ExcelParser.parse(filePath, i));
         }
@@ -42,7 +42,7 @@ public class Main
 
         System.out.println("\nAğaçlar konstıraktır edildi.\n");
 
-        for(Node family : families)
+        for(Family family : families)
         {
             System.out.println("\n\n" + family.rootNode.data.surname + " ailesinin başı: " + family.rootNode.data.name + " " + family.rootNode.data.surname);
             //System.out.println("Eşi: " + family.rootNode.wife.data.name + " " + family.rootNode.wife.data.surname);

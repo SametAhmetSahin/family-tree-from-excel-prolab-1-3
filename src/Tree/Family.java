@@ -4,7 +4,7 @@ import Person.*;
 
 import java.util.ArrayList;
 
-public class Node
+public class Family
 {
     public int nodeID;
     public Person rootNode;

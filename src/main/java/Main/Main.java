@@ -53,5 +53,33 @@ public class Main
             for(Person childlessPerson : family.peepsWithNoChildren)
                 System.out.println(childlessPerson.data.id + " - " + childlessPerson.data.name + " " + childlessPerson.data.surname);
         }
+
+        System.out.println("\n\n");
+
+        PrintFamilyTree(families);
+        //PrintTreeRecursive(families.get(0).rootNode, 0);
+    }
+
+    public static void PrintFamilyTree(ArrayList<Family> families)
+    {
+        for(Family family : families)
+        {
+            PrintTreeRecursive(family.rootNode, 0);
+            System.out.println();
+        }
+    }
+
+    public static void PrintTreeRecursive(Person root, int generation)
+    {
+        for(int i = 0; i < generation; i++)
+            System.out.print(i == generation - 1 ? "|-- " : i == 0 ? "|   " : "    ");
+
+        System.out.print(root.data.id + ": " + root.data.name + " " + root.data.surname);
+        if(root.wife != null)
+            System.out.print(" == " + root.wife.data.id + ": " + root.wife.data.name + " " + root.wife.data.surname);
+        System.out.println();
+
+        for(Person child : root.children)
+            PrintTreeRecursive(child, generation + 1);
     }
 }

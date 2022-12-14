@@ -1,13 +1,19 @@
 package Person;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 
 public class Person
 {
+    @Expose
     public PersonData data;
+
     public Person wife;
+
     public Person mother;
     public Person father;
+    @Expose
     public ArrayList<Person> children;
 
     public Person()

@@ -1,18 +1,32 @@
 package Person;
 
+import com.google.gson.annotations.Expose;
+
 public class PersonData
 {
+    @Expose
     public int id;
+    @Expose
     public String name;
+    @Expose
     public String surname;
+    @Expose
     public String birthdate;
+    @Expose
     public String spouse;
+    @Expose
     public String mother_name;
+    @Expose
     public String father_name;
+    @Expose
     public String blood_type;
+    @Expose
     public String profession;
+    @Expose
     public String marital_status;
+    @Expose
     public String maiden_name;
+    @Expose
     public Boolean gender;
 
     public PersonData()

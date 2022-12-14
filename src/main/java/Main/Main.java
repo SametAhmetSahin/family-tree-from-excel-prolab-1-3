@@ -6,7 +6,7 @@ import Tree.Family;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
+import com.google.gson.*;
 public class Main
 {
     public static void main(String[] args) throws IOException
@@ -57,6 +57,13 @@ public class Main
         System.out.println("\n\n");
 
         PrintFamilyTree(families);
+
+        System.out.println("----------------");
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String familiesjson = "";
+        familiesjson += gson.toJson(families);
+        System.out.println(familiesjson);
+
         //PrintTreeRecursive(families.get(0).rootNode, 0);
     }
 

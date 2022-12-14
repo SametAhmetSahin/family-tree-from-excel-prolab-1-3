@@ -1,13 +1,18 @@
 package Tree;
 
 import Person.*;
+import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 
 public class Family
 {
+    @Expose
     public int nodeID;
+    @Expose
     public Person rootNode;
+
+    @Expose
     public ArrayList<Person> peepsWithNoChildren = new ArrayList<>();
 
     public void AddPerson(PersonData personDataToAdd)

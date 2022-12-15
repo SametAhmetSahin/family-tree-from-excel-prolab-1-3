@@ -62,15 +62,13 @@ public class Main
 
         PrintFamilyTreeToConsole(families);
 
-        System.out.println("----------------");
+        System.out.println("Ailelerin JSON formatındaki verisi:");
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         String familiesjson = "";
         familiesjson += gson.toJson(families);
         System.out.println(familiesjson);
 
         System.out.println("\n----------------------------------------------------------------------------------------\n");
-
-        //System.out.println(Arrays.toString(peopleList.get(0).spouse.split("\\s(\\w+)$")));
     }
 
     public static void PrintFamilyTreeToConsole(ArrayList<Family> families)
@@ -79,7 +77,6 @@ public class Main
         {
             PrintTreeRecursive(family.rootNode, 0, 0, family.rootNode.children.size() - 1, false);
             System.out.println("\n----------------------------------------------------------------------------------------\n");
-            //System.out.println();
         }
     }
 

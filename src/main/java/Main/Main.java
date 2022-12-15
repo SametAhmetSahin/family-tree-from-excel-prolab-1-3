@@ -7,6 +7,7 @@ import Tree.Family;
 import java.io.IOException;
 import java.util.ArrayList;
 import com.google.gson.*;
+
 public class Main
 {
     public static void main(String[] args) throws IOException
@@ -71,22 +72,28 @@ public class Main
     {
         for(Family family : families)
         {
-            PrintTreeRecursive(family.rootNode, 0);
+            PrintTreeRecursive(family.rootNode, 0, 0, family.rootNode.children.size() - 1, false);
             System.out.println();
         }
     }
 
-    public static void PrintTreeRecursive(Person root, int generation)
+    public static void PrintTreeRecursive(Person root, int generation, int childIndex, int childCount, boolean isFinalChild)
     {
         for(int i = 0; i < generation; i++)
-            System.out.print(i == generation - 1 ? "|-- " : i == 0 ? "|   " : "    ");
+        {
+            System.out.print((childIndex >= childCount && i == generation - 1) ? " '-- " :
+                    (i == generation - 1 && childIndex < childCount) ? " |-- " :
+                            (i < generation - 1 && !isFinalChild) ? " |   " : "     ");
+        }
+
+        isFinalChild = childIndex >= childCount;
 
         System.out.print(root.data.id + ": " + root.data.name + " " + root.data.surname);
         if(root.wife != null)
             System.out.print(" == " + root.wife.data.id + ": " + root.wife.data.name + " " + root.wife.data.surname);
         System.out.println();
 
-        for(Person child : root.children)
-            PrintTreeRecursive(child, generation + 1);
+        for(int i = 0; i < root.children.size(); i++)
+            PrintTreeRecursive(root.children.get(i), generation + 1, i, root.children.size() - 1, isFinalChild);
     }
 }

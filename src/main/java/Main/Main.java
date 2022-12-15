@@ -6,6 +6,8 @@ import Tree.Family;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.google.gson.*;
 
 public class Main
@@ -17,9 +19,7 @@ public class Main
         System.out.println("Hello world!");
         System.out.println(System.getProperty("user.dir"));
 
-        //ArrayList<PersonData> peopleList = ExcelParser.parse(filePath, 0);
         ArrayList<PersonData> peopleList = ExcelParser.parseAll(filePath);
-        ArrayList<PersonData> familyRootList = ExcelParser.GetFamilyRoots(filePath);
         ArrayList<ArrayList<PersonData>> membersOfFamilies = new ArrayList<>();
         ArrayList<Family> families = new ArrayList<>();
 
@@ -30,7 +30,7 @@ public class Main
 
         for(int i = 0; i < ExcelParser.GetFamilyCount(filePath); i++)
         {
-            families.add(new Family());
+            families.add(new Family(i));
             membersOfFamilies.add(new ArrayList<>());
             membersOfFamilies.get(i).addAll(ExcelParser.parse(filePath, i));
         }
@@ -39,25 +39,28 @@ public class Main
         {
             for(PersonData data : membersOfFamilies.get(i))
                 families.get(i).AddPerson(data);
+
+            families.get(i).ValidateFamily(peopleList);
         }
 
         System.out.println("\nAğaçlar konstıraktır edildi.\n");
 
+        /*
         for(Family family : families)
         {
             System.out.println("\n\n" + family.rootNode.data.surname + " ailesinin başı: " + family.rootNode.data.name + " " + family.rootNode.data.surname);
-            //System.out.println("Eşi: " + family.rootNode.wife.data.name + " " + family.rootNode.wife.data.surname);
+            System.out.println("Eşi: " + family.rootNode.wife.data.name + " " + family.rootNode.wife.data.surname);
 
             family.FindPeopleWithNoChildrenRecursive(family.rootNode);
 
             System.out.println("\nÇocuksuzlar:");
             for(Person childlessPerson : family.peepsWithNoChildren)
                 System.out.println(childlessPerson.data.id + " - " + childlessPerson.data.name + " " + childlessPerson.data.surname);
-        }
+        }*/
 
-        System.out.println("\n\n");
+        System.out.println("\n----------------------------------------------------------------------------------------\n");
 
-        PrintFamilyTree(families);
+        PrintFamilyTreeToConsole(families);
 
         System.out.println("----------------");
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -65,15 +68,18 @@ public class Main
         familiesjson += gson.toJson(families);
         System.out.println(familiesjson);
 
-        //PrintTreeRecursive(families.get(0).rootNode, 0);
+        System.out.println("\n----------------------------------------------------------------------------------------\n");
+
+        //System.out.println(Arrays.toString(peopleList.get(0).spouse.split("\\s(\\w+)$")));
     }
 
-    public static void PrintFamilyTree(ArrayList<Family> families)
+    public static void PrintFamilyTreeToConsole(ArrayList<Family> families)
     {
         for(Family family : families)
         {
             PrintTreeRecursive(family.rootNode, 0, 0, family.rootNode.children.size() - 1, false);
-            System.out.println();
+            System.out.println("\n----------------------------------------------------------------------------------------\n");
+            //System.out.println();
         }
     }
 
@@ -90,7 +96,10 @@ public class Main
 
         System.out.print(root.data.id + ": " + root.data.name + " " + root.data.surname);
         if(root.wife != null)
-            System.out.print(" == " + root.wife.data.id + ": " + root.wife.data.name + " " + root.wife.data.surname);
+        {
+            System.out.print((root.data.marital_status.equalsIgnoreCase("evli") ? " === " : " =X= ") + root.wife.data.id + ": " + root.wife.data.name + " " + root.wife.data.surname);
+        }
+
         System.out.println();
 
         for(int i = 0; i < root.children.size(); i++)

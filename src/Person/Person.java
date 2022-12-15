@@ -43,6 +43,15 @@ public class Person
         this.children = new ArrayList<>();
     }
 
+    public Person(PersonData Data, Person WifeBand, ArrayList<Person> Children)
+    {
+        this.data = Data;
+        this.mother = null;
+        this.father = null;
+        this.wife = WifeBand;
+        this.children = Children;
+    }
+
     public Person(PersonData Data, Person Mother, Person Father)
     {
         this.data = Data;

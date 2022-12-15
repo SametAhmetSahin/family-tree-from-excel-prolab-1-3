@@ -32,17 +32,33 @@ public class PersonData
     public PersonData()
     {
         this.id = 0;
-        this.name = "";
-        this.surname = "";
-        this.birthdate = "";
-        this.spouse = "";
-        this.mother_name = "";
-        this.father_name = "";
-        this.blood_type = "";
-        this.profession = "";
-        this.marital_status = "";
-        this.maiden_name = "";
+        this.name = "Bilmemkim";
+        this.surname = "Bilinmeyengiloğlu";
+        this.birthdate = "Bilinmiyor";
+        this.spouse = "Bilinmiyor";
+        this.mother_name = "Bilinmiyor";
+        this.father_name = "Bilinmiyor";
+        this.blood_type = "Bilinmiyor";
+        this.profession = "Bilinmiyor";
+        this.marital_status = "Bilinmiyor";
+        this.maiden_name = "Bilinmiyor";
         this.gender = false;
+    }
+
+    public PersonData(int ID, String Name, String Surname, String Marital_Status, boolean Gender)
+    {
+        this.id = ID;
+        this.name = Name;
+        this.surname = Surname;
+        this.birthdate = "Bilinmiyor";
+        this.spouse = "Bilinmiyor";
+        this.mother_name = "Bilinmiyor";
+        this.father_name = "Bilinmiyor";
+        this.blood_type = "Bilinmiyor";
+        this.profession = "Bilinmiyor";
+        this.marital_status = Marital_Status;
+        this.maiden_name = "Bilinmiyor";
+        this.gender = Gender;
     }
 
     public PersonData(int ID, String Name, String Surname, String Birthday, String Spouse, String MotherName, String FatherName, String BloodType, String Profession, String MaritalStatus, String MaidenName, boolean Gender)

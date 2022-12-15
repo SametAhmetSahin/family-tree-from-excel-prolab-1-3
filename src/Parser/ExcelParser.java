@@ -47,7 +47,17 @@ public class ExcelParser
 
             data.gender = row.getCell(11) != null ? row.getCell(11).getStringCellValue().equals("Erkek") : false;
 
-            personDataArrayList.add(data);
+            boolean checkIdentity = false;
+
+            for(PersonData deyta : personDataArrayList)
+                if (deyta.id == data.id)
+                {
+                    checkIdentity = true;
+                    break;
+                }
+
+            if(!checkIdentity)
+                personDataArrayList.add(data);
         }
 
         return personDataArrayList;
@@ -101,43 +111,6 @@ public class ExcelParser
         }
 
         return personDataArrayList;
-    }
-
-    public static ArrayList<PersonData> GetFamilyRoots(String filepath) throws IOException
-    {
-        ArrayList<PersonData> familyRoots = new ArrayList<>();
-
-        FileInputStream fis = new FileInputStream(filepath);
-        XSSFWorkbook wb = new XSSFWorkbook(fis);
-
-        int noOfSheets = wb.getNumberOfSheets();
-
-        for(int i = 0; i < noOfSheets; i++)
-        {
-            XSSFSheet sheet = wb.getSheetAt(i);
-
-            Row row = sheet.getRow(1);
-            PersonData data = new PersonData();
-
-            data.id = (int) row.getCell(0).getNumericCellValue();
-
-            data.name = row.getCell(1).getStringCellValue();
-            data.surname = row.getCell(2).getStringCellValue();
-            data.birthdate = "" + row.getCell(3).getDateCellValue();
-            data.spouse = row.getCell(4).getStringCellValue();
-            data.mother_name = row.getCell(5).getStringCellValue();
-            data.father_name = row.getCell(6).getStringCellValue();
-            data.blood_type = row.getCell(7).getStringCellValue();
-            data.profession = row.getCell(8).getStringCellValue();
-            data.marital_status = row.getCell(9).getStringCellValue();
-            data.maiden_name = row.getCell(10).getStringCellValue();
-
-            data.gender = (row.getCell(11).getStringCellValue().equals("Erkek"));
-
-            familyRoots.add(data);
-        }
-
-        return familyRoots;
     }
 
     public static int GetFamilyCount(String filepath) throws IOException

@@ -39,7 +39,7 @@ public class ExcelParser
             data.marital_status = row.getCell(9) != null ? row.getCell(9).getStringCellValue() : "";
             data.maiden_name = row.getCell(10) != null ? row.getCell(10).getStringCellValue() : "";
 
-            data.gender = row.getCell(11) != null ? row.getCell(11).getStringCellValue().equals("Erkek") : false;
+            data.gender = row.getCell(11) != null ? row.getCell(11).getStringCellValue().equalsIgnoreCase("Erkek") : false;
 
             boolean checkIdentity = false;
 
@@ -88,7 +88,7 @@ public class ExcelParser
                 data.marital_status = row.getCell(9) != null ? row.getCell(9).getStringCellValue() : "";
                 data.maiden_name = row.getCell(10) != null ? row.getCell(10).getStringCellValue() : "";
 
-                data.gender = row.getCell(11) != null ? row.getCell(11).getStringCellValue().equals("Erkek") : false;
+                data.gender = row.getCell(11) != null ? row.getCell(11).getStringCellValue().equalsIgnoreCase("Erkek") : false;
 
                 boolean checkIdentity = false;
 

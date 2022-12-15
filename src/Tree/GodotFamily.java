@@ -36,8 +36,8 @@ public class GodotFamily
         String[] divided = GetSpouseData(root.data.surname, root.data.spouse);
 
         // Eğer kökün eşi yoksa, kökün eşinin adı-soyadı ile eklenecek kişinin adı ve varsa soyadı uyuşuyorsa eş olarak ekle.
-        //if(root.wife == null && personDataToAdd.id == Integer.parseInt(divided[0]) && personDataToAdd.name.equals(divided[1]) && personDataToAdd.surname.equals(divided[2]))
-        if(root.wife == 0 && personDataToAdd.name.equals(divided[0]) && personDataToAdd.surname.equals(divided[1]))
+        //if(root.wife == null && personDataToAdd.id == Integer.parseInt(divided[0]) && personDataToAdd.name.equalsIgnoreCase(divided[1]) && personDataToAdd.surname.equalsIgnoreCase(divided[2]))
+        if(root.wife == 0 && personDataToAdd.name.equalsIgnoreCase(divided[0]) && personDataToAdd.surname.equalsIgnoreCase(divided[1]))
         {
             root.wife = personDataToAdd.id;
             //System.out.println("Eş eklendi.");
@@ -48,7 +48,7 @@ public class GodotFamily
         // Eş kontrolü kalıcı olarak kaldırıldı.
         if(root.data.gender)
         {
-            if(personDataToAdd.father_name.equals(root.data.name))
+            if(personDataToAdd.father_name.equalsIgnoreCase(root.data.name))
             {
                 root.children.add(new GodotPerson(personDataToAdd, root.wife, root.data.id));
                 //System.out.println("Çocuk eklendi.");
@@ -57,7 +57,7 @@ public class GodotFamily
         }
         else
         {
-            if(personDataToAdd.mother_name.equals(root.data.name))
+            if(personDataToAdd.mother_name.equalsIgnoreCase(root.data.name))
             {
                 root.children.add(new GodotPerson(personDataToAdd, root.data.id, root.wife));
                 //System.out.println("Çocuk eklendi.");

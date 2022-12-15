@@ -36,8 +36,8 @@ public class Family
         String[] divided = GetSpouseData(root.data.surname, root.data.spouse);
 
         // Eğer kökün eşi yoksa, kökün eşinin adı-soyadı ile eklenecek kişinin adı ve varsa soyadı uyuşuyorsa eş olarak ekle.
-        //if(root.wife == null && personDataToAdd.id == Integer.parseInt(divided[0]) && personDataToAdd.name.equals(divided[1]) && personDataToAdd.surname.equals(divided[2]))
-        if(root.wife == null && personDataToAdd.name.equals(divided[0]) && personDataToAdd.surname.equals(divided[1]))
+        //if(root.wife == null && personDataToAdd.id == Integer.parseInt(divided[0]) && personDataToAdd.name.equalsIgnoreCase(divided[1]) && personDataToAdd.surname.equalsIgnoreCase(divided[2]))
+        if(root.wife == null && personDataToAdd.name.equalsIgnoreCase(divided[0]) && personDataToAdd.surname.equalsIgnoreCase(divided[1]))
         {
             root.wife = new Person(personDataToAdd, root);
             //System.out.println("Eş eklendi.");
@@ -48,7 +48,7 @@ public class Family
         // Eş kontrolü kalıcı olarak kaldırıldı.
         if(root.data.gender)
         {
-            if(personDataToAdd.father_name.equals(root.data.name))
+            if(personDataToAdd.father_name.equalsIgnoreCase(root.data.name))
             {
                 root.children.add(new Person(personDataToAdd, root.wife, root));
                 //System.out.println("Çocuk eklendi.");
@@ -57,7 +57,7 @@ public class Family
         }
         else
         {
-            if(personDataToAdd.mother_name.equals(root.data.name))
+            if(personDataToAdd.mother_name.equalsIgnoreCase(root.data.name))
             {
                 root.children.add(new Person(personDataToAdd, root, root.wife));
                 //System.out.println("Çocuk eklendi.");

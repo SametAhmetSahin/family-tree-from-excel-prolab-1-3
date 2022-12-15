@@ -16,17 +16,17 @@ public class Main
     {
         String filePath = "test.xlsx";
 
-        System.out.println("Hello world!");
-        System.out.println(System.getProperty("user.dir"));
+        System.out.println("YILDIZsoft Soy Ağacı Sistemi\n");
+        //System.out.println(System.getProperty("user.dir"));
 
         ArrayList<PersonData> peopleList = ExcelParser.parseAll(filePath);
         ArrayList<ArrayList<PersonData>> membersOfFamilies = new ArrayList<>();
         ArrayList<Family> families = new ArrayList<>();
 
-        for(PersonData data : peopleList)
+        /*for(PersonData data : peopleList)
             System.out.println(data.id + " - " + data.name + " " + data.surname);
 
-        System.out.println();
+        System.out.println();*/
 
         for(int i = 0; i < ExcelParser.GetFamilyCount(filePath); i++)
         {
@@ -43,7 +43,7 @@ public class Main
             families.get(i).ValidateFamily(peopleList);
         }
 
-        System.out.println("\nAğaçlar konstıraktır edildi.\n");
+        System.out.println("\nSoy ağaçları oluşturuldu.\n");
 
         /*
         for(Family family : families)
@@ -84,9 +84,18 @@ public class Main
     {
         for(int i = 0; i < generation; i++)
         {
-            System.out.print((childIndex >= childCount && i == generation - 1) ? " '-- " :
-                    (i == generation - 1 && childIndex < childCount) ? " |-- " :
-                            (i < generation - 1 && !isFinalChild) ? " |   " : "     ");
+            if(childIndex >= childCount && i == generation - 1)
+                System.out.print(" '-- ");
+
+            else if(i == generation - 1 && childIndex < childCount)
+                System.out.print(" |-- ");
+
+            else if(i < generation - 1 && !isFinalChild)
+            {
+                System.out.print(" |   ");
+            }
+            else
+                System.out.print("     ");
         }
 
         isFinalChild = childIndex >= childCount;

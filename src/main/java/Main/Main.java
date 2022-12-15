@@ -3,11 +3,10 @@ package Main;
 import Parser.ExcelParser;
 import Person.*;
 import Tree.Family;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
+import Tree.GodotFamily;
 import com.google.gson.*;
 
 public class Main
@@ -22,6 +21,7 @@ public class Main
         ArrayList<PersonData> peopleList = ExcelParser.parseAll(filePath);
         ArrayList<ArrayList<PersonData>> membersOfFamilies = new ArrayList<>();
         ArrayList<Family> families = new ArrayList<>();
+        ArrayList<GodotFamily> godotFamilies = new ArrayList<>();
 
         /*for(PersonData data : peopleList)
             System.out.println(data.id + " - " + data.name + " " + data.surname);
@@ -31,6 +31,7 @@ public class Main
         for(int i = 0; i < ExcelParser.GetFamilyCount(filePath); i++)
         {
             families.add(new Family(i));
+            godotFamilies.add(new GodotFamily(i));
             membersOfFamilies.add(new ArrayList<>());
             membersOfFamilies.get(i).addAll(ExcelParser.parse(filePath, i));
         }
@@ -38,9 +39,13 @@ public class Main
         for(int i = 0; i < families.size(); i++)
         {
             for(PersonData data : membersOfFamilies.get(i))
+            {
                 families.get(i).AddPerson(data);
+                godotFamilies.get(i).AddPerson(data);
+            }
 
             families.get(i).ValidateFamily(peopleList);
+            godotFamilies.get(i).ValidateFamily(peopleList);
         }
 
         System.out.println("\nSoy ağaçları oluşturuldu.\n");
@@ -65,7 +70,7 @@ public class Main
         System.out.println("Ailelerin JSON formatındaki verisi:");
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         String familiesjson = "";
-        familiesjson += gson.toJson(families);
+        familiesjson += gson.toJson(godotFamilies);
         System.out.println(familiesjson);
 
         System.out.println("\n----------------------------------------------------------------------------------------\n");

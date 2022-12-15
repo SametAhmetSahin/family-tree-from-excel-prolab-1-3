@@ -3,55 +3,56 @@ package Person;
 import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 
-public class Person
+public class GodotPerson
 {
     @Expose
     public PersonData data;
-
-    public Person wife;
-
-    public Person mother;
-    public Person father;
     @Expose
-    public ArrayList<Person> children;
+    public int wife = 0;
+    @Expose
+    public int mother;
+    @Expose
+    public int father;
+    @Expose
+    public ArrayList<GodotPerson> children;
 
-    public Person()
+    public GodotPerson()
     {
         this.data = new PersonData();
-        this.mother = null;
-        this.father = null;
-        this.wife = null;
+        this.mother = 0;
+        this.father = 0;
+        this.wife = 0;
         this.children = new ArrayList<>();
     }
 
-    public Person(PersonData Data)
+    public GodotPerson(PersonData Data)
     {
         this.data = Data;
-        this.mother = null;
-        this.father = null;
-        this.wife = null;
+        this.mother = 0;
+        this.father = 0;
+        this.wife = 0;
         this.children = new ArrayList<>();
     }
 
-    public Person(PersonData Data, Person WifeBand)
+    public GodotPerson(PersonData Data, int WifeBand)
     {
         this.data = Data;
-        this.mother = null;
-        this.father = null;
+        this.mother = 0;
+        this.father = 0;
         this.wife = WifeBand;
         this.children = new ArrayList<>();
     }
 
-    public Person(PersonData Data, Person WifeBand, ArrayList<Person> Children)
+    public GodotPerson(PersonData Data, int WifeBand, ArrayList<GodotPerson> Children)
     {
         this.data = Data;
-        this.mother = null;
-        this.father = null;
+        this.mother = 0;
+        this.father = 0;
         this.wife = WifeBand;
         this.children = Children;
     }
 
-    public Person(PersonData Data, Person Mother, Person Father)
+    public GodotPerson(PersonData Data, int Mother, int Father)
     {
         this.data = Data;
         this.mother = Mother;
@@ -59,7 +60,7 @@ public class Person
         this.children = new ArrayList<>();
     }
 
-    public Person(PersonData Data, Person Mother, Person Father, Person WifeBand)
+    public GodotPerson(PersonData Data, int Mother, int Father, int WifeBand)
     {
         this.data = Data;
         this.mother = Mother;
@@ -67,7 +68,7 @@ public class Person
         this.wife = WifeBand;
     }
 
-    public Person(PersonData Data, Person Mother, Person Father, Person WifeBand, ArrayList<Person> Children)
+    public GodotPerson(PersonData Data, int Mother, int Father, int WifeBand, ArrayList<GodotPerson> Children)
     {
         this.data = Data;
         this.mother = Mother;

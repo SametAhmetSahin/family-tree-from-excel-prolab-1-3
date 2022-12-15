@@ -1,18 +1,12 @@
 package Parser;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 
-import Person.Person;
 import Person.PersonData;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 
 public class ExcelParser

@@ -17,6 +17,6 @@ public class GodotFamily
 
     public void AddPerson(Person person)
     {
-        this.rootNode = new GodotPerson(person);
+        this.rootNode = new GodotPerson(person, false);
     }
 }

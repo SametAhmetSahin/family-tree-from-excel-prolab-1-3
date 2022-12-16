@@ -1,5 +1,6 @@
 package Tree;
 
+import Main.Main;
 import Person.*;
 import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
@@ -10,9 +11,6 @@ public class Family
     public int nodeID;
     @Expose
     public Person rootNode = null;
-
-    @Expose
-    public ArrayList<Person> peepsWithNoChildren = new ArrayList<>();
 
     public Family(int id)
     {
@@ -72,12 +70,12 @@ public class Family
         return root;
     }
 
-    public void ValidateFamily(ArrayList<PersonData> peopleList)
+    public void ValidateFamily()
     {
-        this.rootNode = ValidateFamilyRecursive(this.rootNode, peopleList);
+        this.rootNode = ValidateFamilyRecursive(this.rootNode);
     }
 
-    Person ValidateFamilyRecursive(Person root, ArrayList<PersonData> peopleList)
+    Person ValidateFamilyRecursive(Person root)
     {
         // Yorumlanmış kodlar spouse String'inde spouseID bulunması durumunda geçerli olup
         // yorumdan çıkarıldığı takdirde önceden yorumlanmamış eşdeğer kodların yorumlanmasını gerektirmektedir.
@@ -86,7 +84,7 @@ public class Family
         {
             String[] spouseData = GetSpouseData(root.data.surname, root.data.spouse);
 
-            for(PersonData person : peopleList)
+            for(PersonData person : Main.peopleList)
             {
                 //if(person.id == Integer.parseInt(spouseData[0]) && person.name.equalsIgnoreCase(spouseData[1]) && person.surname.equalsIgnoreCase(spouseData[2]))
                 if(person.name.equalsIgnoreCase(spouseData[0]) && person.surname.equalsIgnoreCase(spouseData[1]))
@@ -107,13 +105,15 @@ public class Family
             {
                 if(child.father == null)
                 {
-                    Person father = new Person(new PersonData(peopleList.size() + 1, child.data.father_name, child.data.surname, "Bekar", true), root, root.children);
+                    Main.peopleList.add(new PersonData(Main.peopleList.size(), child.data.father_name, child.data.surname, "Bekar", true));
+                    Person father = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);
                     root.wife = father;
                     child.father = father;
                 }
                 if(child.mother == null)
                 {
-                    Person mother = new Person(new PersonData(peopleList.size() + 1, child.data.mother_name, "Bilinmeyengilkızı", "Dul", false), root, root.children);
+                    Main.peopleList.add(new PersonData(Main.peopleList.size(), child.data.mother_name, "Bilinmeyengilkızı", "Dul", false));
+                    Person mother = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);
                     root.wife = mother;
                     child.mother = mother;
                 }
@@ -123,7 +123,7 @@ public class Family
                     ((!child.data.father_name.isEmpty() && child.father == null) ||
                             (!child.data.mother_name.isEmpty() && child.mother == null)))
             {
-                for(PersonData person : peopleList)
+                for(PersonData person : Main.peopleList)
                 {
                     //if(child.father == null)  // Bozuk versiyon
                     if(child.father == null && person.name.equalsIgnoreCase(child.data.father_name) && person.surname.equalsIgnoreCase(child.data.surname))
@@ -146,20 +146,21 @@ public class Family
 
                 if(child.father == null)
                 {
-                    Person father = new Person(new PersonData(peopleList.size() + 1, child.data.father_name, child.data.surname, "Evli", true), root, root.children);
-                    root.wife = father;
+                    Main.peopleList.add(new PersonData(Main.peopleList.size(), child.data.father_name, child.data.surname, "Evli", true));
+                    Person father = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);root.wife = father;
                     child.father = father;
                 }
                 if(child.mother == null)
                 {
-                    Person mother = new Person(new PersonData(peopleList.size() + 1, child.data.mother_name, child.data.surname, "Evli", false), root, root.children);
+                    Main.peopleList.add(new PersonData(Main.peopleList.size(), child.data.mother_name, child.data.surname, "Evli", false));
+                    Person mother = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);
                     root.wife = mother;
                     child.mother = mother;
                 }
             }
 
             root.children.set(i, child);
-            root.children.set(i, ValidateFamilyRecursive(root.children.get(i), peopleList));
+            root.children.set(i, ValidateFamilyRecursive(root.children.get(i)));
         }
 
         return root;
@@ -207,18 +208,5 @@ public class Family
         ////////////////////////////////////////////////////////////////////////////
 
         return data;
-    }
-
-    // Depth first mantığıyla çocuksuzları bulup ArrayListe ekliyoruz.
-    public void FindPeopleWithNoChildrenRecursive(Person root)
-    {
-        if(root.children.isEmpty())
-            peepsWithNoChildren.add(root);
-
-        else
-        {
-            for(Person person : root.children)
-                FindPeopleWithNoChildrenRecursive(person);
-        }
     }
 }

@@ -45,6 +45,22 @@ public class PersonData
         this.gender = false;
     }
 
+    public PersonData(int ID, PersonData data)
+    {
+        this.id = ID;
+        this.name = data.name;
+        this.surname = data.surname;
+        this.birthdate = data.birthdate;
+        this.spouse = data.spouse;
+        this.mother_name = data.mother_name;
+        this.father_name = data.father_name;
+        this.blood_type = data.blood_type;
+        this.profession = data.profession;
+        this.marital_status = data.marital_status;
+        this.maiden_name = data.maiden_name;
+        this.gender = data.gender;
+    }
+
     public PersonData(int ID, String Name, String Surname, String Marital_Status, boolean Gender)
     {
         this.id = ID;

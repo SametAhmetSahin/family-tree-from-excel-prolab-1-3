@@ -25,6 +25,19 @@ public class GodotPerson
         this.children = new ArrayList<>();
     }
 
+    public GodotPerson(Person person)
+    {
+        this.data = person.data;
+        this.mother = person.mother == null ? 0 : person.mother.data.id;
+        this.father = person.father == null ? 0 : person.father.data.id;
+        this.wife = person.wife == null ? 0 : person.wife.data.id;
+        this.children = new ArrayList<>();
+
+        if(!person.children.isEmpty())
+            for(Person child : person.children)
+                this.children.add(new GodotPerson(child));
+    }
+
     public GodotPerson(PersonData Data)
     {
         this.data = Data;

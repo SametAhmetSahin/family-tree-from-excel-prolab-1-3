@@ -8,7 +8,7 @@ public class GodotPerson
     @Expose
     public PersonData data;
     @Expose
-    public GodotPerson wife = null;
+    public GodotPerson spouse;
     @Expose
     public int mother;
     @Expose
@@ -21,7 +21,7 @@ public class GodotPerson
         this.data = new PersonData();
         this.mother = 0;
         this.father = 0;
-        this.wife = null;
+        this.spouse = null;
         this.children = new ArrayList<>();
     }
 
@@ -30,7 +30,7 @@ public class GodotPerson
         this.data = person.data;
         this.mother = person.mother == null ? 0 : person.mother.data.id;
         this.father = person.father == null ? 0 : person.father.data.id;
-        this.wife = person.wife == null || createNonExistentSpouse ? null : new GodotPerson(person.wife, true);
+        this.spouse = person.spouse == null || createNonExistentSpouse ? null : new GodotPerson(person.spouse, true);
         this.children = new ArrayList<>();
 
         if(!person.children.isEmpty() && !createNonExistentSpouse)

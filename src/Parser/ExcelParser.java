@@ -32,12 +32,12 @@ public class ExcelParser
             data.surname = row.getCell(2) != null ? row.getCell(2).getStringCellValue() : "";
             data.birthdate = row.getCell(3) != null ? row.getCell(3).toString() : "";
             data.spouse = row.getCell(4) != null ? row.getCell(4).getStringCellValue() : "";
-            data.mother_name = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : "";
-            data.father_name = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : "";
-            data.blood_type = row.getCell(7) != null ? row.getCell(7).getStringCellValue() : "";
+            data.motherName = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : "";
+            data.fatherName = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : "";
+            data.bloodType = row.getCell(7) != null ? row.getCell(7).getStringCellValue() : "";
             data.profession = row.getCell(8) != null ? row.getCell(8).getStringCellValue() : "";
-            data.marital_status = row.getCell(9) != null ? row.getCell(9).getStringCellValue() : "";
-            data.maiden_name = row.getCell(10) != null ? row.getCell(10).getStringCellValue() : "";
+            data.maritalStatus = row.getCell(9) != null ? row.getCell(9).getStringCellValue() : "";
+            data.maidenName = row.getCell(10) != null ? row.getCell(10).getStringCellValue() : "";
 
             data.gender = row.getCell(11) != null ? row.getCell(11).getStringCellValue().equalsIgnoreCase("Erkek") : false;
 
@@ -81,12 +81,12 @@ public class ExcelParser
                 data.surname = row.getCell(2) != null ? row.getCell(2).getStringCellValue() : "";
                 data.birthdate = row.getCell(3) != null ? row.getCell(3).toString() : "";
                 data.spouse = row.getCell(4) != null ? row.getCell(4).getStringCellValue() : "";
-                data.mother_name = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : "";
-                data.father_name = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : "";
-                data.blood_type = row.getCell(7) != null ? row.getCell(7).getStringCellValue() : "";
+                data.motherName = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : "";
+                data.fatherName = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : "";
+                data.bloodType = row.getCell(7) != null ? row.getCell(7).getStringCellValue() : "";
                 data.profession = row.getCell(8) != null ? row.getCell(8).getStringCellValue() : "";
-                data.marital_status = row.getCell(9) != null ? row.getCell(9).getStringCellValue() : "";
-                data.maiden_name = row.getCell(10) != null ? row.getCell(10).getStringCellValue() : "";
+                data.maritalStatus = row.getCell(9) != null ? row.getCell(9).getStringCellValue() : "";
+                data.maidenName = row.getCell(10) != null ? row.getCell(10).getStringCellValue() : "";
 
                 data.gender = row.getCell(11) != null ? row.getCell(11).getStringCellValue().equalsIgnoreCase("Erkek") : false;
 

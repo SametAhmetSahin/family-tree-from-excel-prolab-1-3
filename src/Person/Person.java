@@ -1,18 +1,13 @@
 package Person;
 
-import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 
 public class Person
 {
-    @Expose
     public PersonData data;
-
-    public Person wife;
-
+    public Person spouse;
     public Person mother;
     public Person father;
-    @Expose
     public ArrayList<Person> children;
 
     public Person()
@@ -20,7 +15,7 @@ public class Person
         this.data = new PersonData();
         this.mother = null;
         this.father = null;
-        this.wife = null;
+        this.spouse = null;
         this.children = new ArrayList<>();
     }
 
@@ -29,7 +24,7 @@ public class Person
         this.data = Data;
         this.mother = null;
         this.father = null;
-        this.wife = null;
+        this.spouse = null;
         this.children = new ArrayList<>();
     }
 
@@ -38,7 +33,7 @@ public class Person
         this.data = Data;
         this.mother = null;
         this.father = null;
-        this.wife = WifeBand;
+        this.spouse = WifeBand;
         this.children = new ArrayList<>();
     }
 
@@ -47,7 +42,7 @@ public class Person
         this.data = Data;
         this.mother = null;
         this.father = null;
-        this.wife = WifeBand;
+        this.spouse = WifeBand;
         this.children = Children;
     }
 
@@ -64,7 +59,7 @@ public class Person
         this.data = Data;
         this.mother = Mother;
         this.father = Father;
-        this.wife = WifeBand;
+        this.spouse = WifeBand;
     }
 
     public Person(PersonData Data, Person Mother, Person Father, Person WifeBand, ArrayList<Person> Children)
@@ -72,7 +67,7 @@ public class Person
         this.data = Data;
         this.mother = Mother;
         this.father = Father;
-        this.wife = WifeBand;
+        this.spouse = WifeBand;
         this.children = Children;
     }
 }

@@ -15,17 +15,17 @@ public class PersonData
     @Expose
     public String spouse;
     @Expose
-    public String mother_name;
+    public String motherName;
     @Expose
-    public String father_name;
+    public String fatherName;
     @Expose
-    public String blood_type;
+    public String bloodType;
     @Expose
     public String profession;
     @Expose
-    public String marital_status;
+    public String maritalStatus;
     @Expose
-    public String maiden_name;
+    public String maidenName;
     @Expose
     public Boolean gender;
 
@@ -36,12 +36,12 @@ public class PersonData
         this.surname = "Bilinmeyengiloğlu";
         this.birthdate = "Bilinmiyor";
         this.spouse = "Bilinmiyor";
-        this.mother_name = "Bilinmiyor";
-        this.father_name = "Bilinmiyor";
-        this.blood_type = "Bilinmiyor";
+        this.motherName = "Bilinmiyor";
+        this.fatherName = "Bilinmiyor";
+        this.bloodType = "Bilinmiyor";
         this.profession = "Bilinmiyor";
-        this.marital_status = "Bilinmiyor";
-        this.maiden_name = "Bilinmiyor";
+        this.maritalStatus = "Bilinmiyor";
+        this.maidenName = "Bilinmiyor";
         this.gender = false;
     }
 
@@ -52,12 +52,12 @@ public class PersonData
         this.surname = data.surname;
         this.birthdate = data.birthdate;
         this.spouse = data.spouse;
-        this.mother_name = data.mother_name;
-        this.father_name = data.father_name;
-        this.blood_type = data.blood_type;
+        this.motherName = data.motherName;
+        this.fatherName = data.fatherName;
+        this.bloodType = data.bloodType;
         this.profession = data.profession;
-        this.marital_status = data.marital_status;
-        this.maiden_name = data.maiden_name;
+        this.maritalStatus = data.maritalStatus;
+        this.maidenName = data.maidenName;
         this.gender = data.gender;
     }
 
@@ -68,12 +68,12 @@ public class PersonData
         this.surname = Surname;
         this.birthdate = "Bilinmiyor";
         this.spouse = "Bilinmiyor";
-        this.mother_name = "Bilinmiyor";
-        this.father_name = "Bilinmiyor";
-        this.blood_type = "Bilinmiyor";
+        this.motherName = "Bilinmiyor";
+        this.fatherName = "Bilinmiyor";
+        this.bloodType = "Bilinmiyor";
         this.profession = "Bilinmiyor";
-        this.marital_status = Marital_Status;
-        this.maiden_name = "Bilinmiyor";
+        this.maritalStatus = Marital_Status;
+        this.maidenName = "Bilinmiyor";
         this.gender = Gender;
     }
 
@@ -84,12 +84,12 @@ public class PersonData
         this.surname = Surname;
         this.birthdate = Birthday;
         this.spouse = Spouse;
-        this.mother_name = MotherName;
-        this.father_name = FatherName;
-        this.blood_type = BloodType;
+        this.motherName = MotherName;
+        this.fatherName = FatherName;
+        this.bloodType = BloodType;
         this.profession = Profession;
-        this.marital_status = MaritalStatus;
-        this.maiden_name = MaidenName;
+        this.maritalStatus = MaritalStatus;
+        this.maidenName = MaidenName;
         this.gender = Gender;
     }
 }

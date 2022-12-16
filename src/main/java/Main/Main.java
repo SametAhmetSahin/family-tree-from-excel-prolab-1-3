@@ -26,14 +26,6 @@ public class Main
     {
         peopleList = ExcelParser.parseAll(filePath);
 
-        //System.out.println("YILDIZsoft Soy Ağacı Sistemi\n");
-        //System.out.println(System.getProperty("user.dir"));
-
-        /*for(PersonData data : peopleList)
-            System.out.println(data.id + " - " + data.name + " " + data.surname);
-
-        System.out.println();*/
-
         for(int i = 0; i < ExcelParser.GetFamilyCount(filePath); i++)
         {
             families.add(new Family(i));
@@ -45,32 +37,13 @@ public class Main
         for(int i = 0; i < families.size(); i++)
         {
             for(PersonData data : membersOfFamilies.get(i))
-            {
                 families.get(i).AddPerson(data);
-                //godotFamilies.get(i).AddPerson(data);
-            }
 
             families.get(i).ValidateFamily();
-            //godotFamilies.get(i).ValidateFamily(peopleList);
             godotFamilies.get(i).AddPerson(families.get(i).rootNode);
         }
 
-        System.out.println("\nSoy ağaçları oluşturuldu.\n");
-
-        /*
-        for(Family family : families)
-        {
-            System.out.println("\n\n" + family.rootNode.data.surname + " ailesinin başı: " + family.rootNode.data.name + " " + family.rootNode.data.surname);
-            System.out.println("Eşi: " + family.rootNode.wife.data.name + " " + family.rootNode.wife.data.surname);
-
-            family.FindPeopleWithNoChildrenRecursive(family.rootNode);
-
-            System.out.println("\nÇocuksuzlar:");
-            for(Person childlessPerson : family.peepsWithNoChildren)
-                System.out.println(childlessPerson.data.id + " - " + childlessPerson.data.name + " " + childlessPerson.data.surname);
-        }*/
-
-        System.out.println("\n----------------------------------------------------------------------------------------\n");
+        System.out.println("\nSoy ağaçları oluşturuldu.");
 
         PrintFamilyTreeToConsole(families);
 
@@ -131,6 +104,8 @@ public class Main
 
         peopleWithNoChildren.clear();
 
+        System.out.println("Mevcut liste temizlendi, yeni liste oluşturuluyor...\n");
+
         for(Family family : families)
             FindPeopleWithNoChildrenRecursive(family.rootNode);
 
@@ -162,6 +137,10 @@ public class Main
                                  + (j == peopleWithNoChildren.size() - 1 ? "]\n" : ", "));
         }
 
+        System.out.print("\nÇocuğu olmayan kişiler (Yaş sıralaması: büyükten küçüğe)\n");
+        for (Integer personID : peopleWithNoChildren)
+            System.out.println(personID + ": " + GetPersonFromID(personID).name + " " + GetPersonFromID(personID).surname);
+
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
         input.nextLine();
     }
@@ -187,6 +166,8 @@ public class Main
 
     public static void PrintFamilyTreeToConsole(ArrayList<Family> families)
     {
+        System.out.println("\n----------------------------------------------------------------------------------------\n");
+
         for(Family family : families)
         {
             PrintTreeRecursive(family.rootNode, 0, 0, family.rootNode.children.size() - 1, false);
@@ -215,9 +196,9 @@ public class Main
         isFinalChild = childIndex >= childCount;
 
         System.out.print(root.data.id + ": " + root.data.name + " " + root.data.surname);
-        if(root.wife != null)
+        if(root.spouse != null)
         {
-            System.out.print((root.data.marital_status.equalsIgnoreCase("evli") ? " === " : " =X= ") + root.wife.data.id + ": " + root.wife.data.name + " " + root.wife.data.surname);
+            System.out.print((root.data.maritalStatus.equalsIgnoreCase("evli") ? " === " : " =X= ") + root.spouse.data.id + ": " + root.spouse.data.name + " " + root.spouse.data.surname);
         }
 
         System.out.println();

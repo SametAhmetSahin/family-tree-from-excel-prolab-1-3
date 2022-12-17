@@ -1,6 +1,6 @@
 package WebServer;
 
-import Game.Game;
+import Main.Main;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONObject;
@@ -81,8 +81,8 @@ public class InitializeGame implements HttpHandler
         int[] someDeck = { 0, 1, 2, 0, 1 };
 
         //System.out.println("query: " + query);
-        Game.InitializeGame(deck);
-        Game.InitializeLogFile();
+        //Game.InitializeGame(deck);
+        //Game.InitializeLogFile();
 
         //Game.InitializeGame(Boolean.parseBoolean(queryData.get("human")));
 

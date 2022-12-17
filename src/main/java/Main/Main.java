@@ -2,7 +2,8 @@ package Main;
 
 import Parser.ExcelParser;
 import Person.*;
-import Tree.Family;
+import Tree.*;
+import GodotData.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,13 +17,12 @@ public class Main
     static String filePath = "test.xlsx";
     static Scanner input = new Scanner(System.in);
 
+    public static GodotData godotData = new GodotData();
     public static ArrayList<PersonData> peopleList = new ArrayList<>();
     public static ArrayList<ArrayList<PersonData>> membersOfFamilies = new ArrayList<>();
     public static ArrayList<Family> families = new ArrayList<>();
     public static ArrayList<GodotFamily> godotFamilies = new ArrayList<>();
-    public static ArrayList<Integer> peopleWithNoChildren = new ArrayList<>();
-    public static ArrayList<Integer> peopleWithSpecificBlood = new ArrayList<>();
-    public static ArrayList<Integer> generationCounts = new ArrayList<>();
+    public static int tempGenerationCounter = 0;
 
     public static void main(String[] args) throws IOException
     {
@@ -58,12 +58,20 @@ public class Main
         System.out.println("\n----------------------------------------------------------------------------------------\n");*/
 
         FamilyTreeMenu();
+
+        //System.out.println(GetGodotData());
     }
 
     public static String GetGodotTree()
     {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return "" + gson.toJson(godotFamilies);
+    }
+
+    public static String GetGodotData()
+    {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return "" + gson.toJson(godotData);
     }
 
     public static void FamilyTreeMenu()
@@ -82,6 +90,7 @@ public class Main
                 }
                 case "1" -> Menu_FindPeopleWithNoChildren();
                 case "3" -> Menu_FindPeopleWithSpecificBloodType();
+                case "8" -> Menu_CalculateGenerationCount();
 
                 default -> {
                     System.out.println(",------------------------------------------,");
@@ -161,19 +170,19 @@ public class Main
             case "8" -> wantedBloodType = "AB(+)";
         }
 
-        peopleWithSpecificBlood.clear();
+        godotData.peopleWithSpecificBlood.clear();
 
         for(Family family : families)
             FindPeopleWithSpecificBloodTypeRecursive(family.rootNode, wantedBloodType);
 
         System.out.println();
 
-        if(peopleWithSpecificBlood.isEmpty())
+        if(godotData.peopleWithSpecificBlood.isEmpty())
             System.out.println("Kan grubu " + wantedBloodType + " olan herhangi bir kişi yoktur.");
         else
         {
             System.out.println("Kan grubu " + wantedBloodType + " olan kişiler:");
-            for(Integer personID : peopleWithSpecificBlood)
+            for(Integer personID : godotData.peopleWithSpecificBlood)
                 System.out.println(personID + ": " + GetPersonFromID(personID).name + " " + GetPersonFromID(personID).surname);
         }
 
@@ -183,8 +192,8 @@ public class Main
 
     public static void FindPeopleWithSpecificBloodTypeRecursive(Person root, String wantedBloodType)
     {
-        if(root.data.bloodType.equalsIgnoreCase(wantedBloodType) && !peopleWithSpecificBlood.contains(root.data.id))
-            peopleWithSpecificBlood.add(root.data.id);
+        if(root.data.bloodType.equalsIgnoreCase(wantedBloodType) && !godotData.peopleWithSpecificBlood.contains(root.data.id))
+            godotData.peopleWithSpecificBlood.add(root.data.id);
 
         for(Person person : root.children)
             FindPeopleWithSpecificBloodTypeRecursive(person, wantedBloodType);
@@ -192,17 +201,38 @@ public class Main
 
     public static void Menu_CalculateGenerationCount()
     {
+        System.out.println("\n-----  Soy Ağacının Kaç Nesilden Oluştuğunu Hesapla  -----\n");
+
+        godotData.generationCounts.clear();
+
         for(Family family : families)
         {
-
+            tempGenerationCounter = 0;
+            CalculateGenerationCountRecursive(family.rootNode, 1);
+            godotData.generationCounts.add(tempGenerationCounter);
         }
+
+        for(int i = 0; i < godotData.generationCounts.size(); i++)
+            System.out.println((i + 1) + ". soy ağacı " + godotData.generationCounts.get(i) + " nesilden oluşmaktadır.");
+
+        System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
+        input.nextLine();
+    }
+
+    public static void CalculateGenerationCountRecursive(Person root, int currentGen)
+    {
+        if(currentGen > tempGenerationCounter)
+            tempGenerationCounter = currentGen;
+
+        for(Person person : root.children)
+            CalculateGenerationCountRecursive(person, currentGen + 1);
     }
 
     public static void Menu_FindPeopleWithNoChildren()
     {
         System.out.println("\n-----  Çocuğu Olmayanları Bul  -----\n");
 
-        peopleWithNoChildren.clear();
+        godotData.peopleWithNoChildren.clear();
 
         System.out.println("Mevcut liste temizlendi, yeni liste oluşturuluyor...");
 
@@ -211,28 +241,28 @@ public class Main
 
         System.out.println("Liste oluşturuldu.\n");
 
-        if(peopleWithNoChildren.isEmpty())
+        if(godotData.peopleWithNoChildren.isEmpty())
             System.out.println("Çocuğu olmayan herhangi bir kişi yoktur.");
         else
         {
             System.out.print("Sıralanmamış liste: [");
-            for (int j = 0; j < peopleWithNoChildren.size(); j++)
-                System.out.print(peopleWithNoChildren.get(j) + ": " + GetPersonFromID(peopleWithNoChildren.get(j)).name + " " + GetPersonFromID(peopleWithNoChildren.get(j)).surname
-                        + (j == peopleWithNoChildren.size() - 1 ? "]\n\n" : ", "));
+            for (int j = 0; j < godotData.peopleWithNoChildren.size(); j++)
+                System.out.print(godotData.peopleWithNoChildren.get(j) + ": " + GetPersonFromID(godotData.peopleWithNoChildren.get(j)).name + " " + GetPersonFromID(godotData.peopleWithNoChildren.get(j)).surname
+                        + (j == godotData.peopleWithNoChildren.size() - 1 ? "]\n\n" : ", "));
 
             System.out.println("Sıralama başlıyor... (Sıralama için kullanılan algoritma: Selection sort)");
 
-            for (int i = 0; i < peopleWithNoChildren.size() - 1; i++) {
+            for (int i = 0; i < godotData.peopleWithNoChildren.size() - 1; i++) {
                 int index = i;
 
-                for (int j = i + 1; j < peopleWithNoChildren.size(); j++) {
+                for (int j = i + 1; j < godotData.peopleWithNoChildren.size(); j++) {
                     // Birinci kişinin doğum yılı bilgisi alınıyor.
-                    PersonData thePerson = GetPersonFromID(peopleWithNoChildren.get(index));
+                    PersonData thePerson = GetPersonFromID(godotData.peopleWithNoChildren.get(index));
                     String[] theData = thePerson.birthdate.split("[-/.]");
                     int theYear = Integer.parseInt(theData[theData.length - 1]);
 
                     // İkinci kişinin doğum yılı bilgisi alınıyor.
-                    PersonData theOtherPerson = GetPersonFromID(peopleWithNoChildren.get(j));
+                    PersonData theOtherPerson = GetPersonFromID(godotData.peopleWithNoChildren.get(j));
                     String[] theOtherData = theOtherPerson.birthdate.split("[-/.]");
                     int theOtherYear = Integer.parseInt(theOtherData[theOtherData.length - 1]);
 
@@ -240,19 +270,19 @@ public class Main
                         index = j;
                 }
 
-                Integer temp = peopleWithNoChildren.get(i);
-                peopleWithNoChildren.set(i, peopleWithNoChildren.get(index));
-                peopleWithNoChildren.set(index, temp);
+                Integer temp = godotData.peopleWithNoChildren.get(i);
+                godotData.peopleWithNoChildren.set(i, godotData.peopleWithNoChildren.get(index));
+                godotData.peopleWithNoChildren.set(index, temp);
 
                 System.out.print((i + 1) + ". adım sonunda liste: [");
-                for (int j = 0; j < peopleWithNoChildren.size(); j++)
-                    System.out.print(peopleWithNoChildren.get(j) + ": " + GetPersonFromID(peopleWithNoChildren.get(j)).name + " " + GetPersonFromID(peopleWithNoChildren.get(j)).surname
-                            + (j == peopleWithNoChildren.size() - 1 ? "]\n" : ", "));
+                for (int j = 0; j < godotData.peopleWithNoChildren.size(); j++)
+                    System.out.print(godotData.peopleWithNoChildren.get(j) + ": " + GetPersonFromID(godotData.peopleWithNoChildren.get(j)).name + " " + GetPersonFromID(godotData.peopleWithNoChildren.get(j)).surname
+                            + (j == godotData.peopleWithNoChildren.size() - 1 ? "]\n" : ", "));
             }
             System.out.println("Sıralama tamamlandı.");
 
             System.out.print("\nÇocuğu olmayan kişiler (Yaş sıralaması: büyükten küçüğe)\n");
-            for (Integer personID : peopleWithNoChildren)
+            for (Integer personID : godotData.peopleWithNoChildren)
                 System.out.println(personID + ": " + GetPersonFromID(personID).name + " " + GetPersonFromID(personID).surname);
         }
 
@@ -262,8 +292,8 @@ public class Main
 
     public static void FindPeopleWithNoChildrenRecursive(Person root)
     {
-        if(root.children.isEmpty() && !peopleWithNoChildren.contains(root.data.id))
-            peopleWithNoChildren.add(root.data.id);
+        if(root.children.isEmpty() && !godotData.peopleWithNoChildren.contains(root.data.id))
+            godotData.peopleWithNoChildren.add(root.data.id);
 
         else
             for(Person person : root.children)

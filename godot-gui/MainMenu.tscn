@@ -32,4 +32,3 @@ margin_bottom = 603.0
 text = "Computer-Computer Game"
 
 [connection signal="pressed" from="PanelContainer/VBoxContainer/hcgame" to="." method="_on_hcgame_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/ccgame" to="." method="_on_ccgame_pressed"]

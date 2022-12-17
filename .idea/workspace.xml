@@ -5,15 +5,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0acf8e85-e675-490c-907d-0fffdb4860a4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/libraries/json-simple-1.1.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/WebServer/GetTree.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/Node.gd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/Node.tscn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/TreeView.gd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/TreeView.tscn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/ViewCamera.gd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/WebServer/GameStatusHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/WebServer/GetGameStatusHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/WebServer/GetScoresHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/WebServer/PlayARoundHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/WebServer/WebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WebServer/WebServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/.import/paper.png-7786f1cec57caf764293039fee58b648.stex" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/.import/rock.png-2fd843802c09e25179696ea826da5ac7.stex" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/.import/scissors.png-c42a9d9137dc82670ee404e3cf1d0ffc.stex" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/Battle.gd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/Battle.tscn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/Card.gd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/Card.tscn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/CardNode.gd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/Deck.gd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/Deck.tscn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/DeckSelect.gd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/DeckSelect.tscn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/GameOver.gd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/GameOver.tscn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/MainMenu.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/MainMenu.gd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/MainMenu.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/MainMenu.tscn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/PlayerUI.gd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/PlayerUI.tscn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/SelectionCard.gd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/SelectionCard.tscn" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/globalvars.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/globalvars.gd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/paper.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/paper.png.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/project.godot" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/project.godot" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/rock.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/rock.png.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/scissors.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/scissors.png.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/WebServer/GetTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WebServer/GetTree.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/WebServer/InitializeGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WebServer/InitializeGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +82,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "/home/ssahin/repos/prolab-1-3/libraries/json-simple-1.1.1.jar",
+    "last_opened_file_path": "/home/ssahin/repos/prolab-1-2",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2"

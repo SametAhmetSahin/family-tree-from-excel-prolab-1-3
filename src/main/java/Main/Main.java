@@ -12,6 +12,8 @@ import java.util.Scanner;
 import Tree.GodotFamily;
 import com.google.gson.*;
 
+import WebServer.*;
+
 public class Main
 {
     static String filePath = "test.xlsx";
@@ -26,6 +28,8 @@ public class Main
 
     public static void main(String[] args) throws IOException
     {
+
+
         peopleList = ExcelParser.parseAll(filePath);
 
         for(int i = 0; i < ExcelParser.GetFamilyCount(filePath); i++)
@@ -56,10 +60,20 @@ public class Main
         familiesjson += gson.toJson(godotFamilies);
         System.out.println(familiesjson);
         System.out.println("\n----------------------------------------------------------------------------------------\n");*/
+        int port = 8080;
 
+        WebServer server = new WebServer();
+        new Thread(() -> {
+            try {
+                server.Start(port);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
         FamilyTreeMenu();
 
         //System.out.println(GetGodotData());
+
     }
 
     public static String GetGodotTree()

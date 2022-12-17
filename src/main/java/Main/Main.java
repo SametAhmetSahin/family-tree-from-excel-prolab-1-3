@@ -170,19 +170,19 @@ public class Main
             case "8" -> wantedBloodType = "AB(+)";
         }
 
-        godotData.peopleWithSpecificBlood.clear();
+        godotData.peopleIDsWithSpecificBlood.clear();
 
         for(Family family : families)
             FindPeopleWithSpecificBloodTypeRecursive(family.rootNode, wantedBloodType);
 
         System.out.println();
 
-        if(godotData.peopleWithSpecificBlood.isEmpty())
+        if(godotData.peopleIDsWithSpecificBlood.isEmpty())
             System.out.println("Kan grubu " + wantedBloodType + " olan herhangi bir kişi yoktur.");
         else
         {
             System.out.println("Kan grubu " + wantedBloodType + " olan kişiler:");
-            for(Integer personID : godotData.peopleWithSpecificBlood)
+            for(Integer personID : godotData.peopleIDsWithSpecificBlood)
                 System.out.println(personID + ": " + GetPersonFromID(personID).name + " " + GetPersonFromID(personID).surname);
         }
 
@@ -192,8 +192,8 @@ public class Main
 
     public static void FindPeopleWithSpecificBloodTypeRecursive(Person root, String wantedBloodType)
     {
-        if(root.data.bloodType.equalsIgnoreCase(wantedBloodType) && !godotData.peopleWithSpecificBlood.contains(root.data.id))
-            godotData.peopleWithSpecificBlood.add(root.data.id);
+        if(root.data.bloodType.equalsIgnoreCase(wantedBloodType) && !godotData.peopleIDsWithSpecificBlood.contains(root.data.id))
+            godotData.peopleIDsWithSpecificBlood.add(root.data.id);
 
         for(Person person : root.children)
             FindPeopleWithSpecificBloodTypeRecursive(person, wantedBloodType);
@@ -232,7 +232,7 @@ public class Main
     {
         System.out.println("\n-----  Çocuğu Olmayanları Bul  -----\n");
 
-        godotData.peopleWithNoChildren.clear();
+        godotData.peopleIDsWithNoChildren.clear();
 
         System.out.println("Mevcut liste temizlendi, yeni liste oluşturuluyor...");
 
@@ -241,28 +241,28 @@ public class Main
 
         System.out.println("Liste oluşturuldu.\n");
 
-        if(godotData.peopleWithNoChildren.isEmpty())
+        if(godotData.peopleIDsWithNoChildren.isEmpty())
             System.out.println("Çocuğu olmayan herhangi bir kişi yoktur.");
         else
         {
             System.out.print("Sıralanmamış liste: [");
-            for (int j = 0; j < godotData.peopleWithNoChildren.size(); j++)
-                System.out.print(godotData.peopleWithNoChildren.get(j) + ": " + GetPersonFromID(godotData.peopleWithNoChildren.get(j)).name + " " + GetPersonFromID(godotData.peopleWithNoChildren.get(j)).surname
-                        + (j == godotData.peopleWithNoChildren.size() - 1 ? "]\n\n" : ", "));
+            for (int j = 0; j < godotData.peopleIDsWithNoChildren.size(); j++)
+                System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonFromID(godotData.peopleIDsWithNoChildren.get(j)).name + " " + GetPersonFromID(godotData.peopleIDsWithNoChildren.get(j)).surname
+                        + (j == godotData.peopleIDsWithNoChildren.size() - 1 ? "]\n\n" : ", "));
 
             System.out.println("Sıralama başlıyor... (Sıralama için kullanılan algoritma: Selection sort)");
 
-            for (int i = 0; i < godotData.peopleWithNoChildren.size() - 1; i++) {
+            for (int i = 0; i < godotData.peopleIDsWithNoChildren.size() - 1; i++) {
                 int index = i;
 
-                for (int j = i + 1; j < godotData.peopleWithNoChildren.size(); j++) {
+                for (int j = i + 1; j < godotData.peopleIDsWithNoChildren.size(); j++) {
                     // Birinci kişinin doğum yılı bilgisi alınıyor.
-                    PersonData thePerson = GetPersonFromID(godotData.peopleWithNoChildren.get(index));
+                    PersonData thePerson = GetPersonFromID(godotData.peopleIDsWithNoChildren.get(index));
                     String[] theData = thePerson.birthdate.split("[-/.]");
                     int theYear = Integer.parseInt(theData[theData.length - 1]);
 
                     // İkinci kişinin doğum yılı bilgisi alınıyor.
-                    PersonData theOtherPerson = GetPersonFromID(godotData.peopleWithNoChildren.get(j));
+                    PersonData theOtherPerson = GetPersonFromID(godotData.peopleIDsWithNoChildren.get(j));
                     String[] theOtherData = theOtherPerson.birthdate.split("[-/.]");
                     int theOtherYear = Integer.parseInt(theOtherData[theOtherData.length - 1]);
 
@@ -270,19 +270,19 @@ public class Main
                         index = j;
                 }
 
-                Integer temp = godotData.peopleWithNoChildren.get(i);
-                godotData.peopleWithNoChildren.set(i, godotData.peopleWithNoChildren.get(index));
-                godotData.peopleWithNoChildren.set(index, temp);
+                Integer temp = godotData.peopleIDsWithNoChildren.get(i);
+                godotData.peopleIDsWithNoChildren.set(i, godotData.peopleIDsWithNoChildren.get(index));
+                godotData.peopleIDsWithNoChildren.set(index, temp);
 
                 System.out.print((i + 1) + ". adım sonunda liste: [");
-                for (int j = 0; j < godotData.peopleWithNoChildren.size(); j++)
-                    System.out.print(godotData.peopleWithNoChildren.get(j) + ": " + GetPersonFromID(godotData.peopleWithNoChildren.get(j)).name + " " + GetPersonFromID(godotData.peopleWithNoChildren.get(j)).surname
-                            + (j == godotData.peopleWithNoChildren.size() - 1 ? "]\n" : ", "));
+                for (int j = 0; j < godotData.peopleIDsWithNoChildren.size(); j++)
+                    System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonFromID(godotData.peopleIDsWithNoChildren.get(j)).name + " " + GetPersonFromID(godotData.peopleIDsWithNoChildren.get(j)).surname
+                            + (j == godotData.peopleIDsWithNoChildren.size() - 1 ? "]\n" : ", "));
             }
             System.out.println("Sıralama tamamlandı.");
 
             System.out.print("\nÇocuğu olmayan kişiler (Yaş sıralaması: büyükten küçüğe)\n");
-            for (Integer personID : godotData.peopleWithNoChildren)
+            for (Integer personID : godotData.peopleIDsWithNoChildren)
                 System.out.println(personID + ": " + GetPersonFromID(personID).name + " " + GetPersonFromID(personID).surname);
         }
 
@@ -292,8 +292,8 @@ public class Main
 
     public static void FindPeopleWithNoChildrenRecursive(Person root)
     {
-        if(root.children.isEmpty() && !godotData.peopleWithNoChildren.contains(root.data.id))
-            godotData.peopleWithNoChildren.add(root.data.id);
+        if(root.children.isEmpty() && !godotData.peopleIDsWithNoChildren.contains(root.data.id))
+            godotData.peopleIDsWithNoChildren.add(root.data.id);
 
         else
             for(Person person : root.children)

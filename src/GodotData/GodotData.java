@@ -6,9 +6,9 @@ import java.util.ArrayList;
 public class GodotData
 {
     @Expose
-    public ArrayList<Integer> peopleWithNoChildren = new ArrayList<>();
+    public ArrayList<Integer> peopleIDsWithNoChildren = new ArrayList<>();
     @Expose
-    public ArrayList<Integer> peopleWithSpecificBlood = new ArrayList<>();
+    public ArrayList<Integer> peopleIDsWithSpecificBlood = new ArrayList<>();
     @Expose
     public ArrayList<Integer> generationCounts = new ArrayList<>();
 }

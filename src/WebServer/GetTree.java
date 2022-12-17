@@ -1,6 +1,8 @@
 package WebServer;
 
-import Game.Game;
+import Person.*;
+import Tree.*;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -11,7 +13,7 @@ import java.util.HashMap;
 
 import static WebServer.RootHandler.parseQuery;
 
-public class GetScoresHandler implements HttpHandler
+public class GetTree implements HttpHandler
 {
     @Override
     public void handle(HttpExchange he) throws IOException
@@ -23,7 +25,7 @@ public class GetScoresHandler implements HttpHandler
 
         // send response
         String response = "";
-        response += Game.player1.GetPlayerScore() + "," + Game.player2.GetPlayerScore();
+        //response = Game.GetGameInfo();
 
         he.sendResponseHeaders(200, response.length());
         OutputStream os = he.getResponseBody();
@@ -31,5 +33,6 @@ public class GetScoresHandler implements HttpHandler
 
         os.close();
 
+        System.out.println("query: " + query);
     }
 }

@@ -22,6 +22,7 @@ public class Main
     public static ArrayList<GodotFamily> godotFamilies = new ArrayList<>();
     public static ArrayList<Integer> peopleWithNoChildren = new ArrayList<>();
     public static ArrayList<Integer> peopleWithSpecificBlood = new ArrayList<>();
+    public static ArrayList<Integer> generationCounts = new ArrayList<>();
 
     public static void main(String[] args) throws IOException
     {
@@ -57,6 +58,12 @@ public class Main
         System.out.println("\n----------------------------------------------------------------------------------------\n");*/
 
         FamilyTreeMenu();
+    }
+
+    public static String GetGodotTree()
+    {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return "" + gson.toJson(godotFamilies);
     }
 
     public static void FamilyTreeMenu()
@@ -181,6 +188,14 @@ public class Main
 
         for(Person person : root.children)
             FindPeopleWithSpecificBloodTypeRecursive(person, wantedBloodType);
+    }
+
+    public static void Menu_CalculateGenerationCount()
+    {
+        for(Family family : families)
+        {
+
+        }
     }
 
     public static void Menu_FindPeopleWithNoChildren()

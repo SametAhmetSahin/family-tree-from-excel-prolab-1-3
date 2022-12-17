@@ -28,8 +28,6 @@ public class Main
 
     public static void main(String[] args) throws IOException
     {
-
-
         peopleList = ExcelParser.parseAll(filePath);
 
         for(int i = 0; i < ExcelParser.GetFamilyCount(filePath); i++)
@@ -49,17 +47,6 @@ public class Main
             godotFamilies.get(i).AddPerson(families.get(i).rootNode);
         }
 
-        //System.out.println("\nSoy ağaçları oluşturuldu.");
-
-        //PrintFamilyTreeToConsole(families);
-
-        /*
-        System.out.println("Ailelerin JSON formatındaki verisi:");
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String familiesjson = "";
-        familiesjson += gson.toJson(godotFamilies);
-        System.out.println(familiesjson);
-        System.out.println("\n----------------------------------------------------------------------------------------\n");*/
         int port = 8080;
 
         WebServer server = new WebServer();
@@ -70,10 +57,8 @@ public class Main
                 throw new RuntimeException(e);
             }
         }).start();
+
         FamilyTreeMenu();
-
-        //System.out.println(GetGodotData());
-
     }
 
     public static String GetGodotTree()
@@ -100,14 +85,14 @@ public class Main
             {
                 case "0" -> {
                     System.out.println("Sistemden çıkış yapılıyor...");
-                    return;
+                    System.exit(0);
                 }
                 case "1" -> Menu_FindPeopleWithNoChildren();
                 case "3" -> Menu_FindPeopleWithSpecificBloodType();
                 case "8" -> Menu_CalculateGenerationCount();
 
                 default -> {
-                    System.out.println(",------------------------------------------,");
+                    System.out.println(".------------------------------------------.");
                     System.out.println("| Seçiminiz hatalı, lütfen tekrar deneyin. |");
                     System.out.println("'------------------------------------------'\n");
                 }
@@ -162,7 +147,7 @@ public class Main
 
             if(illegal)
             {
-                System.out.println(",------------------------------------------,");
+                System.out.println(".------------------------------------------.");
                 System.out.println("| Seçiminiz hatalı, lütfen tekrar deneyin. |");
                 System.out.println("'------------------------------------------'\n");
             }
@@ -266,10 +251,12 @@ public class Main
 
             System.out.println("Sıralama başlıyor... (Sıralama için kullanılan algoritma: Selection sort)");
 
-            for (int i = 0; i < godotData.peopleIDsWithNoChildren.size() - 1; i++) {
+            for (int i = 0; i < godotData.peopleIDsWithNoChildren.size() - 1; i++)
+            {
                 int index = i;
 
-                for (int j = i + 1; j < godotData.peopleIDsWithNoChildren.size(); j++) {
+                for (int j = i + 1; j < godotData.peopleIDsWithNoChildren.size(); j++)
+                {
                     // Birinci kişinin doğum yılı bilgisi alınıyor.
                     PersonData thePerson = GetPersonFromID(godotData.peopleIDsWithNoChildren.get(index));
                     String[] theData = thePerson.birthdate.split("[-/.]");
@@ -323,7 +310,7 @@ public class Main
         return null;
     }
 
-    public static void PrintFamilyTreeToConsole(ArrayList<Family> families)
+/*    public static void PrintFamilyTreeToConsole(ArrayList<Family> families)
     {
         System.out.println("\n----------------------------------------------------------------------------------------\n");
 
@@ -345,9 +332,8 @@ public class Main
                 System.out.print(" |-- ");
 
             else if(i < generation - 1 && !isFinalChild)
-            {
                 System.out.print(" |   ");
-            }
+
             else
                 System.out.print("     ");
         }
@@ -356,13 +342,11 @@ public class Main
 
         System.out.print(root.data.id + ": " + root.data.name + " " + root.data.surname);
         if(root.spouse != null)
-        {
             System.out.print((root.data.maritalStatus.equalsIgnoreCase("evli") ? " === " : " =X= ") + root.spouse.data.id + ": " + root.spouse.data.name + " " + root.spouse.data.surname);
-        }
 
         System.out.println();
 
         for(int i = 0; i < root.children.size(); i++)
             PrintTreeRecursive(root.children.get(i), generation + 1, i, root.children.size() - 1, isFinalChild);
-    }
+    }*/
 }

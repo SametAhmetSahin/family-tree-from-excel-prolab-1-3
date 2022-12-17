@@ -11,4 +11,6 @@ public class GodotData
     public ArrayList<Integer> peopleIDsWithSpecificBlood = new ArrayList<>();
     @Expose
     public ArrayList<Integer> generationCounts = new ArrayList<>();
+    @Expose
+    public int[] generationCountAfterPerson = new int[2];
 }

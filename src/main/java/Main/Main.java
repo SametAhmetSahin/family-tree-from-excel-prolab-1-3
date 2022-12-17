@@ -25,6 +25,7 @@ public class Main
     public static ArrayList<Family> families = new ArrayList<>();
     public static ArrayList<GodotFamily> godotFamilies = new ArrayList<>();
     public static int tempGenerationCounter = 0;
+    public static Person tempPerson;
 
     public static void main(String[] args) throws IOException
     {
@@ -58,6 +59,8 @@ public class Main
             }
         }).start();
 
+        System.out.println();
+
         FamilyTreeMenu();
     }
 
@@ -90,6 +93,7 @@ public class Main
                 case "1" -> Menu_FindPeopleWithNoChildren();
                 case "3" -> Menu_FindPeopleWithSpecificBloodType();
                 case "8" -> Menu_CalculateGenerationCount();
+                case "9" -> Menu_CalculateGenerationsAfterPerson();
 
                 default -> {
                     System.out.println(".------------------------------------------.");
@@ -103,17 +107,67 @@ public class Main
     public static void RenderMenu()
     {
         System.out.println("YILDIZsoft Soy Ağacı Sistemi\n");
-        System.out.println("1) Çocuğu olmayanları bul.");
+        System.out.println("1) Çocuğu olmayanları bul.");   // Tamamlandı
         System.out.println("2) Üvey kardeşleri bul.");
-        System.out.println("3) Belirtilen kan grubuna sahip kişileri bul.");
+        System.out.println("3) Belirtilen kan grubuna sahip kişileri bul.");    // Tamamlandı
         System.out.println("4) Ata mesleğini devam ettiren kişileri bul.");
         System.out.println("5) Aynı isme sahip kişileri bul.");
         System.out.println("6) Belirtilen iki kişinin birbirine yakınlığını bul.");
         System.out.println("7) Belirtilen kişinin soy ağacını göster.");
-        System.out.println("8) Soy ağacının kaç nesilden oluştuğunu hesapla.");
-        System.out.println("9) Belitilen kişiden sonra kaç nesil geldiğini hesapla.\n");
+        System.out.println("8) Soy ağacının kaç nesilden oluştuğunu hesapla."); // Tamamlandı
+        System.out.println("9) Belirtilen kişiden sonra kaç nesil geldiğini hesapla.\n");   // Tamamlandı
         System.out.println("0) Çıkış\n");
         System.out.print("Seçiminiz: ");
+    }
+
+    public static void Menu_CalculateGenerationsAfterPerson()
+    {
+        System.out.println("\n-----  Belirtilen Kişiden Sonra Kaç Nesil Geldiğini Hesapla  -----\n");
+
+        System.out.print("Kişinin ID'sini giriniz: ");
+        int wantedID = input.nextInt();
+        Person wantedPerson = GetPersonFromID(wantedID);
+
+        tempGenerationCounter = 0;
+        CalculateGenerationCountRecursive(wantedPerson, 0);
+
+        godotData.generationCountAfterPerson[0] = wantedID;
+        godotData.generationCountAfterPerson[1] = tempGenerationCounter;
+
+        System.out.println(wantedPerson.data.name + " " + wantedPerson.data.surname + " kişisinden sonra " + (tempGenerationCounter == 0 ? "nesil gelmemektedir." : tempGenerationCounter + " nesil gelmektedir."));
+
+        System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
+        input.nextLine();
+        input.nextLine();
+    }
+
+    public static Person GetPersonFromID(int ID)
+    {
+        tempPerson = null;
+
+        for(Family family : families)
+            FindPersonRecursive(family.rootNode, ID);
+
+        return tempPerson;
+    }
+
+    public static void FindPersonRecursive(Person root, int ID)
+    {
+        if(root.data.id == ID)
+            tempPerson = root;
+
+        else
+        {
+            if(root.spouse != null)
+                if(root.spouse.data.id == ID)
+                {
+                    tempPerson = root.spouse;
+                    return;
+                }
+
+            for (Person child : root.children)
+                FindPersonRecursive(child, ID);
+        }
     }
 
     public static void Menu_RenderBloodTypeMenu()
@@ -182,7 +236,7 @@ public class Main
         {
             System.out.println("Kan grubu " + wantedBloodType + " olan kişiler:");
             for(Integer personID : godotData.peopleIDsWithSpecificBlood)
-                System.out.println(personID + ": " + GetPersonFromID(personID).name + " " + GetPersonFromID(personID).surname);
+                System.out.println(personID + ": " + GetPersonDataFromID(personID).name + " " + GetPersonDataFromID(personID).surname);
         }
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
@@ -246,7 +300,7 @@ public class Main
         {
             System.out.print("Sıralanmamış liste: [");
             for (int j = 0; j < godotData.peopleIDsWithNoChildren.size(); j++)
-                System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonFromID(godotData.peopleIDsWithNoChildren.get(j)).name + " " + GetPersonFromID(godotData.peopleIDsWithNoChildren.get(j)).surname
+                System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j)).name + " " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j)).surname
                         + (j == godotData.peopleIDsWithNoChildren.size() - 1 ? "]\n\n" : ", "));
 
             System.out.println("Sıralama başlıyor... (Sıralama için kullanılan algoritma: Selection sort)");
@@ -258,12 +312,12 @@ public class Main
                 for (int j = i + 1; j < godotData.peopleIDsWithNoChildren.size(); j++)
                 {
                     // Birinci kişinin doğum yılı bilgisi alınıyor.
-                    PersonData thePerson = GetPersonFromID(godotData.peopleIDsWithNoChildren.get(index));
+                    PersonData thePerson = GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(index));
                     String[] theData = thePerson.birthdate.split("[-/.]");
                     int theYear = Integer.parseInt(theData[theData.length - 1]);
 
                     // İkinci kişinin doğum yılı bilgisi alınıyor.
-                    PersonData theOtherPerson = GetPersonFromID(godotData.peopleIDsWithNoChildren.get(j));
+                    PersonData theOtherPerson = GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j));
                     String[] theOtherData = theOtherPerson.birthdate.split("[-/.]");
                     int theOtherYear = Integer.parseInt(theOtherData[theOtherData.length - 1]);
 
@@ -277,14 +331,14 @@ public class Main
 
                 System.out.print((i + 1) + ". adım sonunda liste: [");
                 for (int j = 0; j < godotData.peopleIDsWithNoChildren.size(); j++)
-                    System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonFromID(godotData.peopleIDsWithNoChildren.get(j)).name + " " + GetPersonFromID(godotData.peopleIDsWithNoChildren.get(j)).surname
+                    System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j)).name + " " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j)).surname
                             + (j == godotData.peopleIDsWithNoChildren.size() - 1 ? "]\n" : ", "));
             }
             System.out.println("Sıralama tamamlandı.");
 
             System.out.print("\nÇocuğu olmayan kişiler (Yaş sıralaması: büyükten küçüğe)\n");
             for (Integer personID : godotData.peopleIDsWithNoChildren)
-                System.out.println(personID + ": " + GetPersonFromID(personID).name + " " + GetPersonFromID(personID).surname);
+                System.out.println(personID + ": " + GetPersonDataFromID(personID).name + " " + GetPersonDataFromID(personID).surname);
         }
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
@@ -301,7 +355,7 @@ public class Main
                 FindPeopleWithNoChildrenRecursive(person);
     }
 
-    public static PersonData GetPersonFromID(int ID)
+    public static PersonData GetPersonDataFromID(int ID)
     {
         for(PersonData data : peopleList)
             if(data.id == ID)

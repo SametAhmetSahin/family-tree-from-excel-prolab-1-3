@@ -21,6 +21,7 @@ public class Main
     public static ArrayList<Family> families = new ArrayList<>();
     public static ArrayList<GodotFamily> godotFamilies = new ArrayList<>();
     public static ArrayList<Integer> peopleWithNoChildren = new ArrayList<>();
+    public static ArrayList<Integer> peopleWithSpecificBlood = new ArrayList<>();
 
     public static void main(String[] args) throws IOException
     {
@@ -43,16 +44,17 @@ public class Main
             godotFamilies.get(i).AddPerson(families.get(i).rootNode);
         }
 
-        System.out.println("\nSoy ağaçları oluşturuldu.");
+        //System.out.println("\nSoy ağaçları oluşturuldu.");
 
-        PrintFamilyTreeToConsole(families);
+        //PrintFamilyTreeToConsole(families);
 
+        /*
         System.out.println("Ailelerin JSON formatındaki verisi:");
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         String familiesjson = "";
         familiesjson += gson.toJson(godotFamilies);
         System.out.println(familiesjson);
-        System.out.println("\n----------------------------------------------------------------------------------------\n");
+        System.out.println("\n----------------------------------------------------------------------------------------\n");*/
 
         FamilyTreeMenu();
     }
@@ -72,6 +74,7 @@ public class Main
                     return;
                 }
                 case "1" -> Menu_FindPeopleWithNoChildren();
+                case "3" -> Menu_FindPeopleWithSpecificBloodType();
 
                 default -> {
                     System.out.println(",------------------------------------------,");
@@ -98,48 +101,145 @@ public class Main
         System.out.print("Seçiminiz: ");
     }
 
+    public static void Menu_RenderBloodTypeMenu()
+    {
+        System.out.println("Aramak istediğiniz kan grubunu seçin.\n");
+        System.out.println("1) 0(-)");
+        System.out.println("2) 0(+)");
+        System.out.println("3) A(-)");
+        System.out.println("4) A(+)");
+        System.out.println("5) B(-)");
+        System.out.println("6) B(+)");
+        System.out.println("7) AB(-)");
+        System.out.println("8) AB(+)\n");
+        System.out.println("0) İptal\n");
+        System.out.print("Seçiminiz: ");
+    }
+
+    public static void Menu_FindPeopleWithSpecificBloodType()
+    {
+        System.out.println("\n-----  Belirtilen Kan Grubuna Sahip Kişileri Bul  -----\n");
+
+        String selection, wantedBloodType = "";
+        boolean illegal;
+
+        do
+        {
+            Menu_RenderBloodTypeMenu();
+            selection = input.nextLine();
+
+            illegal = !(selection.equals("1") || selection.equals("2") || selection.equals("3") || selection.equals("4") || selection.equals("5") || selection.equals("6") || selection.equals("7") || selection.equals("8") || selection.equals("0"));
+
+            if(illegal)
+            {
+                System.out.println(",------------------------------------------,");
+                System.out.println("| Seçiminiz hatalı, lütfen tekrar deneyin. |");
+                System.out.println("'------------------------------------------'\n");
+            }
+        } while (illegal);
+
+        switch(selection)
+        {
+            case "0" -> {
+                System.out.println("\nİşlem iptal edildi, ana menüye dönülüyor...\n----------------------------------------------------------------------------\n");
+                return;
+            }
+            case "1" -> wantedBloodType = "0(-)";
+            case "2" -> wantedBloodType = "0(+)";
+            case "3" -> wantedBloodType = "A(-)";
+            case "4" -> wantedBloodType = "A(+)";
+            case "5" -> wantedBloodType = "B(-)";
+            case "6" -> wantedBloodType = "B(+)";
+            case "7" -> wantedBloodType = "AB(-)";
+            case "8" -> wantedBloodType = "AB(+)";
+        }
+
+        peopleWithSpecificBlood.clear();
+
+        for(Family family : families)
+            FindPeopleWithSpecificBloodTypeRecursive(family.rootNode, wantedBloodType);
+
+        System.out.println();
+
+        if(peopleWithSpecificBlood.isEmpty())
+            System.out.println("Kan grubu " + wantedBloodType + " olan herhangi bir kişi yoktur.");
+        else
+        {
+            System.out.println("Kan grubu " + wantedBloodType + " olan kişiler:");
+            for(Integer personID : peopleWithSpecificBlood)
+                System.out.println(personID + ": " + GetPersonFromID(personID).name + " " + GetPersonFromID(personID).surname);
+        }
+
+        System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
+        input.nextLine();
+    }
+
+    public static void FindPeopleWithSpecificBloodTypeRecursive(Person root, String wantedBloodType)
+    {
+        if(root.data.bloodType.equalsIgnoreCase(wantedBloodType) && !peopleWithSpecificBlood.contains(root.data.id))
+            peopleWithSpecificBlood.add(root.data.id);
+
+        for(Person person : root.children)
+            FindPeopleWithSpecificBloodTypeRecursive(person, wantedBloodType);
+    }
+
     public static void Menu_FindPeopleWithNoChildren()
     {
         System.out.println("\n-----  Çocuğu Olmayanları Bul  -----\n");
 
         peopleWithNoChildren.clear();
 
-        System.out.println("Mevcut liste temizlendi, yeni liste oluşturuluyor...\n");
+        System.out.println("Mevcut liste temizlendi, yeni liste oluşturuluyor...");
 
         for(Family family : families)
             FindPeopleWithNoChildrenRecursive(family.rootNode);
 
-        for(int i = 0; i < peopleWithNoChildren.size() - 1; i++)
+        System.out.println("Liste oluşturuldu.\n");
+
+        if(peopleWithNoChildren.isEmpty())
+            System.out.println("Çocuğu olmayan herhangi bir kişi yoktur.");
+        else
         {
-            int index = i;
-
-            for(int j = i + 1; j < peopleWithNoChildren.size(); j++)
-            {
-                PersonData thePerson = GetPersonFromID(peopleWithNoChildren.get(index));
-                String[] theData = thePerson.birthdate.split("[-/.]");
-                int theYear = Integer.parseInt(theData[theData.length - 1]);
-
-                PersonData theOtherPerson = GetPersonFromID(peopleWithNoChildren.get(j));
-                String[] theOtherData = theOtherPerson.birthdate.split("[-/.]");
-                int theOtherYear = Integer.parseInt(theOtherData[theOtherData.length - 1]);
-
-                if(theYear > theOtherYear)
-                    index = j;
-            }
-
-            Integer temp = peopleWithNoChildren.get(i);
-            peopleWithNoChildren.set(i, peopleWithNoChildren.get(index));
-            peopleWithNoChildren.set(index, temp);
-
-            System.out.print((i + 1) + ". adım sonunda liste: [");
-            for(int j = 0; j < peopleWithNoChildren.size(); j++)
+            System.out.print("Sıralanmamış liste: [");
+            for (int j = 0; j < peopleWithNoChildren.size(); j++)
                 System.out.print(peopleWithNoChildren.get(j) + ": " + GetPersonFromID(peopleWithNoChildren.get(j)).name + " " + GetPersonFromID(peopleWithNoChildren.get(j)).surname
-                                 + (j == peopleWithNoChildren.size() - 1 ? "]\n" : ", "));
-        }
+                        + (j == peopleWithNoChildren.size() - 1 ? "]\n\n" : ", "));
 
-        System.out.print("\nÇocuğu olmayan kişiler (Yaş sıralaması: büyükten küçüğe)\n");
-        for (Integer personID : peopleWithNoChildren)
-            System.out.println(personID + ": " + GetPersonFromID(personID).name + " " + GetPersonFromID(personID).surname);
+            System.out.println("Sıralama başlıyor... (Sıralama için kullanılan algoritma: Selection sort)");
+
+            for (int i = 0; i < peopleWithNoChildren.size() - 1; i++) {
+                int index = i;
+
+                for (int j = i + 1; j < peopleWithNoChildren.size(); j++) {
+                    // Birinci kişinin doğum yılı bilgisi alınıyor.
+                    PersonData thePerson = GetPersonFromID(peopleWithNoChildren.get(index));
+                    String[] theData = thePerson.birthdate.split("[-/.]");
+                    int theYear = Integer.parseInt(theData[theData.length - 1]);
+
+                    // İkinci kişinin doğum yılı bilgisi alınıyor.
+                    PersonData theOtherPerson = GetPersonFromID(peopleWithNoChildren.get(j));
+                    String[] theOtherData = theOtherPerson.birthdate.split("[-/.]");
+                    int theOtherYear = Integer.parseInt(theOtherData[theOtherData.length - 1]);
+
+                    if (theYear > theOtherYear)
+                        index = j;
+                }
+
+                Integer temp = peopleWithNoChildren.get(i);
+                peopleWithNoChildren.set(i, peopleWithNoChildren.get(index));
+                peopleWithNoChildren.set(index, temp);
+
+                System.out.print((i + 1) + ". adım sonunda liste: [");
+                for (int j = 0; j < peopleWithNoChildren.size(); j++)
+                    System.out.print(peopleWithNoChildren.get(j) + ": " + GetPersonFromID(peopleWithNoChildren.get(j)).name + " " + GetPersonFromID(peopleWithNoChildren.get(j)).surname
+                            + (j == peopleWithNoChildren.size() - 1 ? "]\n" : ", "));
+            }
+            System.out.println("Sıralama tamamlandı.");
+
+            System.out.print("\nÇocuğu olmayan kişiler (Yaş sıralaması: büyükten küçüğe)\n");
+            for (Integer personID : peopleWithNoChildren)
+                System.out.println(personID + ": " + GetPersonFromID(personID).name + " " + GetPersonFromID(personID).surname);
+        }
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
         input.nextLine();

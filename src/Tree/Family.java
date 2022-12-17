@@ -20,7 +20,7 @@ public class Family
 
     Person AddPersonRecursive(Person root, PersonData personDataToAdd)
     {
-        // Yorumlanmış kodlar spouse String'inde spouseID bulunması durumunda geçerli olup
+        // Yorumlanmış kodlar spouse String'inde spouseID bulunmaması durumunda geçerli olup
         // yorumdan çıkarıldığı takdirde önceden yorumlanmamış eşdeğer kodların yorumlanmasını gerektirmektedir.
 
         if(root == null)
@@ -29,13 +29,16 @@ public class Family
         // Eş stringini bölüyoruz çünkü herkesin eşinde soyadı bulunmuyor ve bunu göz önüne almamız lazım.
         String[] divided = GetSpouseData(root.data.surname, root.data.spouse);
 
-        // Eğer kökün eşi yoksa, kökün eşinin adı-soyadı ile eklenecek kişinin adı ve varsa soyadı uyuşuyorsa eş olarak ekle.
-        //if(root.wife == null && personDataToAdd.id == Integer.parseInt(divided[0]) && personDataToAdd.name.equalsIgnoreCase(divided[1]) && personDataToAdd.surname.equalsIgnoreCase(divided[2]))
-        if(root.spouse == null && personDataToAdd.name.equalsIgnoreCase(divided[0]) && personDataToAdd.surname.equalsIgnoreCase(divided[1]))
+        if(!root.data.spouse.isEmpty())
         {
-            root.spouse = new Person(personDataToAdd, root);
-            //System.out.println("Eş eklendi.");
-            return root;
+            // Eğer kökün eşi yoksa, kökün eşinin adı-soyadı ile eklenecek kişinin adı ve varsa soyadı uyuşuyorsa eş olarak ekle.
+            if (root.spouse == null && personDataToAdd.id == Integer.parseInt(divided[0]) && personDataToAdd.name.equalsIgnoreCase(divided[1]) && personDataToAdd.surname.equalsIgnoreCase(divided[2]))
+            //if(root.spouse == null && personDataToAdd.name.equalsIgnoreCase(divided[0]) && personDataToAdd.surname.equalsIgnoreCase(divided[1]))
+            {
+                root.spouse = new Person(personDataToAdd, root);
+                //System.out.println("Eş eklendi.");
+                return root;
+            }
         }
 
         // Eklenecek kişinin anne-baba adı köke uyuyorsa çocuk olarak ekle.
@@ -73,7 +76,7 @@ public class Family
 
     Person ValidateFamilyRecursive(Person root)
     {
-        // Yorumlanmış kodlar spouse String'inde spouseID bulunması durumunda geçerli olup
+        // Yorumlanmış kodlar spouse String'inde spouseID bulunmaması durumunda geçerli olup
         // yorumdan çıkarıldığı takdirde önceden yorumlanmamış eşdeğer kodların yorumlanmasını gerektirmektedir.
 
         if(root.data.maritalStatus.equalsIgnoreCase("Evli") && root.spouse == null)
@@ -82,11 +85,14 @@ public class Family
 
             for(PersonData person : Main.peopleList)
             {
-                //if(person.id == Integer.parseInt(spouseData[0]) && person.name.equalsIgnoreCase(spouseData[1]) && person.surname.equalsIgnoreCase(spouseData[2]))
-                if(person.name.equalsIgnoreCase(spouseData[0]) && person.surname.equalsIgnoreCase(spouseData[1]))
+                if(!spouseData[0].isBlank())
                 {
-                    root.spouse = new Person(person);
-                    break;
+                    if (person.id == Integer.parseInt(spouseData[0]) && person.name.equalsIgnoreCase(spouseData[1]) && person.surname.equalsIgnoreCase(spouseData[2]))
+                    //if(person.name.equalsIgnoreCase(spouseData[0]) && person.surname.equalsIgnoreCase(spouseData[1]))
+                    {
+                        root.spouse = new Person(person);
+                        break;
+                    }
                 }
             }
         }
@@ -122,7 +128,7 @@ public class Family
                 for(PersonData person : Main.peopleList)
                 {
                     //if(child.father == null)  // Bozuk versiyon
-                    if(child.father == null && person.name.equalsIgnoreCase(child.data.fatherName) && person.surname.equalsIgnoreCase(child.data.surname))
+                    if(child.father == null && person.id == Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]) && person.name.equalsIgnoreCase(child.data.fatherName) && person.surname.equalsIgnoreCase(child.data.surname))
                     {
                         Person father = new Person(person);
                         root.spouse = father;
@@ -131,7 +137,7 @@ public class Family
                     }
 
                     //if(child.mother == null)  // Bozuk versiyon
-                    if(child.mother == null && person.name.equalsIgnoreCase(child.data.motherName) /*&& person.surname.equalsIgnoreCase(child.data.surname)*/)
+                    if(child.mother == null && person.id == Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]) && person.name.equalsIgnoreCase(child.data.motherName) /*&& person.surname.equalsIgnoreCase(child.data.surname)*/)
                     {
                         Person mother = new Person(person);
                         root.spouse = mother;
@@ -142,13 +148,14 @@ public class Family
 
                 if(child.father == null)
                 {
-                    Main.peopleList.add(new PersonData(Main.peopleList.size(), child.data.fatherName, child.data.surname, "Evli", true));
-                    Person father = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);root.spouse = father;
+                    Main.peopleList.add(new PersonData(Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]), child.data.fatherName, child.data.surname, "Evli", true));
+                    Person father = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);
+                    root.spouse = father;
                     child.father = father;
                 }
                 if(child.mother == null)
                 {
-                    Main.peopleList.add(new PersonData(Main.peopleList.size(), child.data.motherName, child.data.surname, "Evli", false));
+                    Main.peopleList.add(new PersonData(Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]), child.data.motherName, child.data.surname, "Evli", false));
                     Person mother = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);
                     root.spouse = mother;
                     child.mother = mother;
@@ -164,44 +171,48 @@ public class Family
 
     public String[] GetSpouseData(String surnameOfHusband, String spouse)
     {
-        // Yorumlanmış kodlar spouse String'inde spouseID bulunması durumunda geçerli olup
+        // Yorumlanmış kodlar spouse String'inde spouseID bulunmaması durumunda geçerli olup
         // yorumdan çıkarıldığı takdirde önceden yorumlanmamış eşdeğer kodların yorumlanmasını gerektirmektedir.
         // İlgili kodlar eğik çizgiler ('/') arasında bulunmaktadır.
 
-        String[] data = new String[2]; //new String[3];
-        String[] splitted = spouse.split(" ");
+        String[] data = { "", "", "" }; //{ "", "" };
 
-        String name = "";
-        for(int i = 0; i < splitted.length - 1; i++)
-            name += i == splitted.length - 2 ? splitted[i] : splitted[i] + " ";
-
-        ////////////////////////////////////////////////////////////////////////////
-        if(!splitted[splitted.length - 1].equalsIgnoreCase(surnameOfHusband))
+        if(!spouse.isBlank())
         {
-            name += " " + splitted[splitted.length - 1];
-            data[0] = name;
-            data[1] = surnameOfHusband;
+            String[] splitted = spouse.split(" ");
+
+            String name = "";
+            for (int i = 0; i < splitted.length - 1; i++)
+                name += i == splitted.length - 2 ? splitted[i] : splitted[i] + " ";
+
+            ////////////////////////////////////////////////////////////////////////////
+            /*if(!splitted[splitted.length - 1].equalsIgnoreCase(surnameOfHusband))
+            {
+                name += " " + splitted[splitted.length - 1];
+                data[0] = name;
+                data[1] = surnameOfHusband;
+            }
+            else
+            {
+                data[0] = name;
+                data[1] = splitted[splitted.length - 1];
+            }*/
+
+            data[0] = splitted[0];
+
+            if (splitted[splitted.length - 1].equalsIgnoreCase(surnameOfHusband))
+            {
+                name += " " + splitted[splitted.length - 1];
+                data[1] = name;
+                data[2] = surnameOfHusband;
+            }
+            else
+            {
+                data[1] = name;
+                data[2] = splitted[splitted.length - 1];
+            }
+            ////////////////////////////////////////////////////////////////////////////
         }
-        else
-        {
-            data[0] = name;
-            data[1] = splitted[splitted.length - 1];
-        }
-
-        /*data[0] = splitted[0];
-
-        if(splitted[splitted.length - 1].equalsIgnoreCase(surnameOfHusband))
-        {
-            name += " " + surnameOfHusband;
-            data[1] = name;
-            data[2] = surnameOfHusband;
-        }
-        else
-        {
-            data[1] = name;
-            data[2] = splitted[splitted.length - 1];
-        }*/
-        ////////////////////////////////////////////////////////////////////////////
 
         return data;
     }

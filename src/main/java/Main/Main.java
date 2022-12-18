@@ -52,7 +52,7 @@ public class Main
         for(int i = 0; i < families.size(); i++)
         {
             for(PersonData data : membersOfFamilies.get(i))
-                families.get(i).AddPerson(data);
+                families.get(i).AddPerson(data, peopleList);
 
             families.get(i).ValidateFamily(peopleList);
             godotFamilies.get(i).AddPerson(families.get(i).rootNode);
@@ -91,6 +91,7 @@ public class Main
                 }
                 case "1" -> Menu_FindPeopleWithNoChildren(families, personData);
                 case "3" -> Menu_FindPeopleWithSpecificBloodType(families, personData);
+                case "4" -> Menu_FindContinuedProfessions(families, personData);
                 case "7" -> Menu_ShowFamilyTreeOfSpecificPerson(families, personData);
                 case "8" -> Menu_CalculateGenerationCount(families);
                 case "9" -> Menu_CalculateGenerationsAfterPerson(families);
@@ -112,7 +113,7 @@ public class Main
         System.out.println("1) Çocuğu olmayanları bul.");   // Tamamlandı
         System.out.println("2) Üvey kardeşleri bul.");
         System.out.println("3) Belirtilen kan grubuna sahip kişileri bul.");    // Tamamlandı
-        System.out.println("4) Ata mesleğini devam ettiren kişileri bul.");
+        System.out.println("4) Ata mesleğini devam ettiren kişileri bul.");     // Tamamlandı
         System.out.println("5) Aynı isme sahip kişileri bul.");
         System.out.println("6) Belirtilen iki kişinin birbirine yakınlığını bul.");
         System.out.println("7) Belirtilen kişinin soy ağacını göster.");    // Tamamlandı
@@ -120,6 +121,54 @@ public class Main
         System.out.println("9) Belirtilen kişiden sonra kaç nesil geldiğini hesapla.\n");   // Tamamlandı
         System.out.println("0) Çıkış\n");
         System.out.print("Seçiminiz: ");
+    }
+
+    public static void Menu_FindContinuedProfessions(ArrayList<Family> families, ArrayList<PersonData> personData)
+    {
+        System.out.println("\n-----  Ata Mesleğini Devam Ettiren Kişileri Bul  -----\n");
+        godotData.continuedProfessions.clear();
+
+        for(Family family : families)
+            FindContinuedProfessionsRecursive(family.rootNode);
+
+        System.out.println("Ata mesleğini devam ettiren kişiler:");
+        for(Integer[] data : godotData.continuedProfessions)
+        {
+            switch(data[1])
+            {
+                case 1 -> System.out.println(GetPersonDataFromID(data[0], personData).id + ": " + GetPersonDataFromID(data[0], personData).name + " " + GetPersonDataFromID(data[0], personData).surname + " babasının mesleğini devam ettiriyor.");
+                case 2 -> System.out.println(GetPersonDataFromID(data[0], personData).id + ": " + GetPersonDataFromID(data[0], personData).name + " " + GetPersonDataFromID(data[0], personData).surname + " dedesinin mesleğini devam ettiriyor.");
+                case 3 -> System.out.println(GetPersonDataFromID(data[0], personData).id + ": " + GetPersonDataFromID(data[0], personData).name + " " + GetPersonDataFromID(data[0], personData).surname + " hem babasının hem de dedesinin mesleğini devam ettiriyor.");
+            }
+        }
+
+        System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
+        input.nextLine();
+    }
+
+    public static void FindContinuedProfessionsRecursive(Person root)
+    {
+        if(root.father != null)
+        {
+            if (root.father.father != null)
+            {
+                if (root.data.profession.equalsIgnoreCase(root.father.data.profession) &&
+                        root.data.profession.equalsIgnoreCase(root.father.father.data.profession))
+                    godotData.continuedProfessions.add(new Integer[]{root.data.id, 3});
+
+                else if(root.data.profession.equalsIgnoreCase(root.father.father.data.profession))
+                    godotData.continuedProfessions.add(new Integer[]{root.data.id, 2});
+
+                else if (root.data.profession.equalsIgnoreCase(root.father.data.profession))
+                    godotData.continuedProfessions.add(new Integer[]{root.data.id, 1});
+            }
+            else
+                if (root.data.profession.equalsIgnoreCase(root.father.data.profession))
+                    godotData.continuedProfessions.add(new Integer[]{root.data.id, 1});
+        }
+
+        for(Person child : root.children)
+            FindContinuedProfessionsRecursive(child);
     }
 
     public static void Menu_ShowFamilyTreeOfSpecificPerson(ArrayList<Family> families, ArrayList<PersonData> personData)
@@ -134,7 +183,7 @@ public class Main
 
         Family wantedFamily = new Family(0);
 
-        AddPersonToFamilyRecursive(wantedPerson, wantedFamily);
+        AddPersonToFamilyRecursive(wantedPerson, wantedFamily, personData);
         wantedFamily.ValidateFamily(personData);
         SetRelationOfPersonRecursive(wantedFamily.rootNode, "", false, false, true);
 
@@ -150,18 +199,18 @@ public class Main
         input.nextLine();
     }
 
-    public static void AddPersonToFamilyRecursive(Person root, Family familyToAdded)
+    public static void AddPersonToFamilyRecursive(Person root, Family familyToAdded, ArrayList<PersonData> peopleList)
     {
         if(root == null)
             return;
 
-        familyToAdded.AddPerson(root.data);
+        familyToAdded.AddPerson(root.data, peopleList);
 
         if(root.spouse != null)
-            familyToAdded.AddPerson(root.spouse.data);
+            familyToAdded.AddPerson(root.spouse.data, peopleList);
 
         for(Person child : root.children)
-            AddPersonToFamilyRecursive(child, familyToAdded);
+            AddPersonToFamilyRecursive(child, familyToAdded, peopleList);
     }
 
     public static void SetRelationOfPersonRecursive(Person root, String relation, boolean isNotStart, boolean upward, boolean checkSpouse)
@@ -188,7 +237,7 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                SetRelationOfPersonRecursive(root.spouse, relation + "eşi", true, false, false);
+                SetRelationOfPersonRecursive(root.spouse, relation + (root.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, false, false);
             }
 
             relation = temp;
@@ -221,7 +270,7 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                SetRelationOfPersonRecursive(root.spouse, relation + "eşi", true, true, false);
+                SetRelationOfPersonRecursive(root.spouse, relation + (root.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, true, false);
             }
 
             relation = temp;

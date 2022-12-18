@@ -16,4 +16,6 @@ public class GodotData
     public int[] generationCountAfterPerson = new int[2];   // İlk eleman kişi ID'si, ikinci eleman kişiden sonra gelen nesil sayısı
     @Expose
     public GodotFamily familyTreeOfSpecificPerson = new GodotFamily(0);
+    @Expose
+    public ArrayList<Integer[]> continuedProfessions = new ArrayList<>();   // İlk eleman devam ettiren kişinin ID'si, ikinci eleman ise 1: baba | 2: dede | 3: hem baba hem dede
 }

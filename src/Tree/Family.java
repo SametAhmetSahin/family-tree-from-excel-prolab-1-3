@@ -15,18 +15,20 @@ public class Family
         this.nodeID = id;
     }
 
-    public void AddPerson(PersonData personDataToAdd)
+    public void AddPerson(PersonData personDataToAdd, ArrayList<PersonData> peopleList)
     {
-        this.rootNode = AddPersonRecursive(this.rootNode, personDataToAdd);
+        this.rootNode = AddPersonRecursive(this.rootNode, personDataToAdd, peopleList);
     }
 
-    Person AddPersonRecursive(Person root, PersonData personDataToAdd)
+    Person AddPersonRecursive(Person root, PersonData personDataToAdd, ArrayList<PersonData> peopleList)
     {
         // Yorumlanmış kodlar spouse String'inde spouseID bulunmaması durumunda geçerli olup
         // yorumdan çıkarıldığı takdirde önceden yorumlanmamış eşdeğer kodların yorumlanmasını gerektirmektedir.
 
         if(root == null)
             return new Person(personDataToAdd);
+
+        root.data.surname = Main.GetPersonDataFromID(root.data.id, peopleList).surname;
 
         // Eş stringini bölüyoruz çünkü herkesin eşinde soyadı bulunmuyor ve bunu göz önüne almamız lazım.
         String[] divided = GetSpouseData(root.data.surname, root.data.spouse);
@@ -66,7 +68,7 @@ public class Family
 
         // Eklenecek kişinin bilgileri mevcut köke uymuyorsa çocukları dolaş.
         for(int i = 0; i < root.children.size(); i++)
-            root.children.set(i, AddPersonRecursive(root.children.get(i), personDataToAdd));
+            root.children.set(i, AddPersonRecursive(root.children.get(i), personDataToAdd, peopleList));
 
         return root;
     }

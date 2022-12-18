@@ -19,11 +19,11 @@ margin_bottom = 1073.0
 custom_constants/separation = 100
 alignment = 1
 
-[node name="hcgame" type="Button" parent="PanelContainer/VBoxContainer"]
+[node name="rendertree" type="Button" parent="PanelContainer/VBoxContainer"]
 margin_top = 463.0
 margin_right = 1906.0
 margin_bottom = 483.0
-text = "Human-Computer Game"
+text = "Render Tree"
 
 [node name="ccgame" type="Button" parent="PanelContainer/VBoxContainer"]
 margin_top = 583.0
@@ -31,4 +31,4 @@ margin_right = 1906.0
 margin_bottom = 603.0
 text = "Computer-Computer Game"
 
-[connection signal="pressed" from="PanelContainer/VBoxContainer/hcgame" to="." method="_on_hcgame_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/rendertree" to="." method="_on_rendertree_pressed"]

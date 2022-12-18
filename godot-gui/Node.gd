@@ -1,33 +1,56 @@
-extends Control
+extends Node2D
 
 
 #[id, name, surname, birthdate, spouse, motherName, fatherName, bloodType, profession, maritalStatus, maidenName, gender]
 var person
 var data = {"id":"id", "name":"name", "surname":"surname", "birthdate":"birthdate", "spouse":"spouse", "motherName":"motherName", "fatherName":"fatherName", "bloodType":"bloodType", "profession":"profession", "maritalStatus":"maritalStatus", "maidenName":"maidenName", "gender":"gender"}
-
+var root = false
 
 func set_person(newperson):
 	person = newperson
 	update_labels()
 
-func add_node(person: Dictionary, position: Vector2):
+func add_node(person: Dictionary, newpos: Vector2):
 	var node_scene = load("res://Node.tscn")
 	var newnode = node_scene.instance()
 	newnode.set_person(person)
-	newnode.rect_position = position
+	newnode.position = newpos
 	add_child(newnode)
 	return newnode
 	#call_deferred("add_child", newnode)
+	
+func set_parent_line(to: Vector2):
+	$Line2D.points[1] = to
+	pass
+func set_spouse_line(to: Vector2):
+	$Line2D.points[1] = to
+	$Line2D.default_color = Color("ff6666")
+	#print(person["data"].keys())
+	#print(person["data"]["maritalStatus"])
+	if person["data"]["maritalStatus"] == "Bekar":
+		$Line2D.width = 2
+	pass
 
 func generate_subnodes(startpos):
-		
 	var totalwidth = person["children"].size() * 240 + (person["children"].size()-1) * 80
-	var offset = Vector2(totalwidth/2, 150)
+	var offset = Vector2(-totalwidth/2, 0)
+	#print(person["spouse"])
 	for child in person["children"]:
-		var childnode = add_node(child, startpos + offset)
-		offset += childnode.generate_subnodes(startpos + offset)
-	return Vector2(totalwidth/2, 150)
-	pass
+		var childnode = add_node(child, offset + Vector2(0, 150))
+		childnode.set_parent_line(-childnode.position)
+		offset += childnode.generate_subnodes(offset) + Vector2(320, 0)
+	if person.has("spouse"):
+		var spousenode = add_node(person["spouse"], Vector2(260, 0))
+		spousenode.set_spouse_line(Vector2(-320, 0))
+		offset += Vector2(80, 0)
+	if root:
+		if person.has("mother"):
+			var mothernode = add_node(person["mother"], Vector2(320, -150))
+			mothernode.set_parent_line(-Vector2(320, -150))
+		if person.has("Father"):
+			var fathernode = add_node(person["father"], Vector2(0, -150))
+			fathernode.set_parent_line(-Vector2(0, -150))
+	return offset
 
 func update_labels():
 	$Panel/id.text = str(person["data"]["id"])

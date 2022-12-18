@@ -5,24 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0acf8e85-e675-490c-907d-0fffdb4860a4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/LICENSE.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Black.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-BlackItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-BoldItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Italic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Light.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-LightItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-MediumItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Regular.tres" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Thin.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-ThinItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/divorcedcurve.tres" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/WebServer/GetPeopleList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/MainMenu.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/MainMenu.gd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/MainMenu.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/MainMenu.tscn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/MainTheme.tres" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/MainTheme.tres" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/godot-gui/Node.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/Node.gd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/godot-gui/Node.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/Node.tscn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/godot-gui/TreeView.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/TreeView.gd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

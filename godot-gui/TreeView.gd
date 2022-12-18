@@ -6,20 +6,26 @@ onready var node_scene = preload("res://Node.tscn")
 
 func generate_tree(person: Dictionary, startpos: Vector2):
 	#startpos = startpos
-	var totalwidth = person["children"].size() * 120 + (person["children"].size()-1) * 80
+	var totalwidth = person["children"].size() * 240 + (person["children"].size()-1) * 80
 	var offset = Vector2(totalwidth, 100)
 	#print(person["children"])
+	var rootnode = add_node(person, startpos)
+	rootnode.set_parent_line(Vector2(0, 0))
+	rootnode.root = true
+	offset += rootnode.generate_subnodes(startpos + offset)
+	offset += Vector2(320, 0)
 	for child in person["children"]:
-		print(child.keys())
-		var childnode = add_node(child, startpos + offset)
-		offset += childnode.generate_subnodes(startpos + offset)
-		offset += Vector2(200, 0)
+		#print(child.keys())
+		#var childnode = rootnode.add_node(child, startpos + offset)
+		#offset += childnode.generate_subnodes(startpos + offset)
+		#offset += Vector2(320, 0)
+		pass
 
 
 func add_node(person: Dictionary, position: Vector2):
 	var newnode = node_scene.instance()
 	newnode.set_person(person)
-	newnode.rect_position = position
+	newnode.global_position = position
 	$Tree.call_deferred("add_child", newnode)
 	return newnode
 	#add_child(newnode)
@@ -41,11 +47,11 @@ func _ready():
 		#print(str(root["rootNode"]["data"]["id"]) + " " + root["rootNode"]["data"]["name"] + " " + root["rootNode"]["data"]["surname"])
 		var person = root["rootNode"]
 		#var data = {"id": person["data"]["id"], "name": person["data"]["name"], "surname": person["data"]["surname"], "birthdate": person["data"]["birthdate"], "spouse": person["data"]["spouse"], "motherName": person["data"]["motherName"], "fatherName": person["data"]["fatherName"], "bloodType": person["data"]["bloodType"], "profession": person["data"]["profession"], "maritalStatus": person["data"]["maritalStatus"], "maidenName": person["data"]["maidenName"], "gender": person["data"]["gender"]}
-		pos += Vector2(300, 0)
+		pos += Vector2(4000, 0)
 		#add_node(data, pos)
 		
-		generate_tree(person, Vector2(0, 0))
-		break
+		generate_tree(person, pos)
+		
 	
 
 

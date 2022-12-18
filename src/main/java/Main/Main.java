@@ -173,9 +173,12 @@ public class Main
 
         root.data.surname += relation;
 
+        String temp = relation;
+
         if(!upward)
         {
-            if (root.spouse != null && checkSpouse) {
+            if (root.spouse != null && checkSpouse)
+            {
                 if (relation.endsWith("ı") || relation.endsWith("a"))
                     relation += "nın ";
                 else if (relation.endsWith("i") || relation.endsWith("e"))
@@ -188,7 +191,10 @@ public class Main
                 SetRelationOfPersonRecursive(root.spouse, relation + "eşi", true, false, false);
             }
 
-            if (!root.children.isEmpty() && checkSpouse) {
+            relation = temp;
+
+            if (!root.children.isEmpty() && checkSpouse)
+            {
                 if (relation.endsWith("ı") || relation.endsWith("a"))
                     relation += "nın ";
                 else if (relation.endsWith("i") || relation.endsWith("e"))
@@ -204,7 +210,8 @@ public class Main
         }
         else
         {
-            if (root.spouse != null && checkSpouse) {
+            if (root.spouse != null && checkSpouse)
+            {
                 if (relation.endsWith("ı") || relation.endsWith("a"))
                     relation += "nın ";
                 else if (relation.endsWith("i") || relation.endsWith("e"))
@@ -217,7 +224,10 @@ public class Main
                 SetRelationOfPersonRecursive(root.spouse, relation + "eşi", true, true, false);
             }
 
-            if (root.mother != null) {
+            relation = temp;
+
+            if (root.mother != null)
+            {
                 if (relation.endsWith("ı") || relation.endsWith("a"))
                     relation += "nın ";
                 else if (relation.endsWith("i") || relation.endsWith("e"))
@@ -230,7 +240,10 @@ public class Main
                 SetRelationOfPersonRecursive(root.mother, relation + "annesi", true, true, true);
             }
 
-            if (root.father != null && checkSpouse) {
+            relation = temp;
+
+            if (root.father != null && checkSpouse)
+            {
                 if (relation.endsWith("ı") || relation.endsWith("a"))
                     relation += "nın ";
                 else if (relation.endsWith("i") || relation.endsWith("e"))

@@ -5,43 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0acf8e85-e675-490c-907d-0fffdb4860a4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/godot-gui/Node.gd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/Node.tscn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/TreeView.gd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/TreeView.tscn" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/godot-gui/ViewCamera.gd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/LICENSE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Black.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-BlackItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Bold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-BoldItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Italic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Light.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-LightItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Medium.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-MediumItalic.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Regular.tres" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Regular.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-Thin.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/godot-gui/fonts/Roboto-ThinItalic.ttf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/.import/paper.png-7786f1cec57caf764293039fee58b648.stex" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/.import/rock.png-2fd843802c09e25179696ea826da5ac7.stex" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/.import/scissors.png-c42a9d9137dc82670ee404e3cf1d0ffc.stex" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/Battle.gd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/Battle.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/Card.gd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/Card.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/CardNode.gd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/Deck.gd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/Deck.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/DeckSelect.gd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/DeckSelect.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/GameOver.gd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/GameOver.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/MainMenu.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/MainMenu.gd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/MainMenu.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/MainMenu.tscn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/PlayerUI.gd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/PlayerUI.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/SelectionCard.gd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/SelectionCard.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/globalvars.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/globalvars.gd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/paper.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/paper.png.import" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/project.godot" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/project.godot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/rock.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/rock.png.import" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/scissors.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/scissors.png.import" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/WebServer/GetTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WebServer/GetTree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/WebServer/InitializeGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WebServer/InitializeGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/Node.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/Node.gd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/Node.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/Node.tscn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/TreeView.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/TreeView.gd" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,23 +57,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "/home/ssahin/repos/prolab-1-2",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/ssahin/repos/prolab-1-2&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "JAVA"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;JAVA&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="WebServer" />

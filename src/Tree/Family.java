@@ -3,6 +3,8 @@ package Tree;
 import Main.Main;
 import Person.*;
 
+import java.util.ArrayList;
+
 public class Family
 {
     public int nodeID;
@@ -69,21 +71,23 @@ public class Family
         return root;
     }
 
-    public void ValidateFamily()
+    public void ValidateFamily(ArrayList<PersonData> peopleList)
     {
-        this.rootNode = ValidateFamilyRecursive(this.rootNode);
+        this.rootNode = ValidateFamilyRecursive(this.rootNode, peopleList);
     }
 
-    Person ValidateFamilyRecursive(Person root)
+    Person ValidateFamilyRecursive(Person root, ArrayList<PersonData> peopleList)
     {
         // Yorumlanmış kodlar spouse String'inde spouseID bulunmaması durumunda geçerli olup
         // yorumdan çıkarıldığı takdirde önceden yorumlanmamış eşdeğer kodların yorumlanmasını gerektirmektedir.
+
+        root.data.surname = Main.GetPersonDataFromID(root.data.id, peopleList).surname;
 
         if(root.data.maritalStatus.equalsIgnoreCase("Evli") && root.spouse == null)
         {
             String[] spouseData = GetSpouseData(root.data.surname, root.data.spouse);
 
-            for(PersonData person : Main.peopleList)
+            for(PersonData person : peopleList)
             {
                 if(!spouseData[0].isBlank())
                 {
@@ -107,15 +111,15 @@ public class Family
             {
                 if(child.father == null)
                 {
-                    Main.peopleList.add(new PersonData(Main.peopleList.size(), child.data.fatherName, child.data.surname, "Bekar", true));
-                    Person father = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);
+                    peopleList.add(new PersonData(peopleList.size(), child.data.fatherName, child.data.surname, "Bekar", true));
+                    Person father = new Person(peopleList.get(peopleList.size() - 1), root, root.children);
                     root.spouse = father;
                     child.father = father;
                 }
                 if(child.mother == null)
                 {
-                    Main.peopleList.add(new PersonData(Main.peopleList.size(), child.data.motherName, "Bilinmeyengilkızı", "Dul", false));
-                    Person mother = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);
+                    peopleList.add(new PersonData(peopleList.size(), child.data.motherName, "Bilinmeyengilkızı", "Dul", false));
+                    Person mother = new Person(peopleList.get(peopleList.size() - 1), root, root.children);
                     root.spouse = mother;
                     child.mother = mother;
                 }
@@ -125,7 +129,7 @@ public class Family
                     ((!child.data.fatherName.isEmpty() && child.father == null) ||
                             (!child.data.motherName.isEmpty() && child.mother == null)))
             {
-                for(PersonData person : Main.peopleList)
+                for(PersonData person : peopleList)
                 {
                     //if(child.father == null)  // Bozuk versiyon
                     if(child.father == null && person.id == Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]) && person.name.equalsIgnoreCase(child.data.fatherName) && person.surname.equalsIgnoreCase(child.data.surname))
@@ -148,22 +152,22 @@ public class Family
 
                 if(child.father == null)
                 {
-                    Main.peopleList.add(new PersonData(Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]), child.data.fatherName, child.data.surname, "Evli", true));
-                    Person father = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);
+                    peopleList.add(new PersonData(Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]), child.data.fatherName, child.data.surname, "Evli", true));
+                    Person father = new Person(peopleList.get(peopleList.size() - 1), root, root.children);
                     root.spouse = father;
                     child.father = father;
                 }
                 if(child.mother == null)
                 {
-                    Main.peopleList.add(new PersonData(Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]), child.data.motherName, child.data.surname, "Evli", false));
-                    Person mother = new Person(Main.peopleList.get(Main.peopleList.size() - 1), root, root.children);
+                    peopleList.add(new PersonData(Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]), child.data.motherName, child.data.surname, "Evli", false));
+                    Person mother = new Person(peopleList.get(peopleList.size() - 1), root, root.children);
                     root.spouse = mother;
                     child.mother = mother;
                 }
             }
 
             root.children.set(i, child);
-            root.children.set(i, ValidateFamilyRecursive(root.children.get(i)));
+            root.children.set(i, ValidateFamilyRecursive(root.children.get(i), peopleList));
         }
 
         return root;

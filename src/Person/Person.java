@@ -19,6 +19,15 @@ public class Person
         this.children = new ArrayList<>();
     }
 
+    public Person(Person person)
+    {
+        this.data = person.data;
+        this.mother = person.mother;
+        this.father = person.father;
+        this.spouse = person.spouse;
+        this.children = person.children;
+    }
+
     public Person(PersonData Data)
     {
         this.data = Data;

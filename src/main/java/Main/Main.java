@@ -20,16 +20,26 @@ public class Main
     static Scanner input = new Scanner(System.in);
 
     public static GodotData godotData = new GodotData();
-    public static ArrayList<PersonData> peopleList = new ArrayList<>();
-    public static ArrayList<ArrayList<PersonData>> membersOfFamilies = new ArrayList<>();
-    public static ArrayList<Family> families = new ArrayList<>();
     public static ArrayList<GodotFamily> godotFamilies = new ArrayList<>();
     public static int tempGenerationCounter = 0;
     public static Person tempPerson;
 
     public static void main(String[] args) throws IOException
     {
-        peopleList = ExcelParser.parseAll(filePath);
+        int port = 8080;
+
+        WebServer server = new WebServer();
+        new Thread(() -> {
+            try {
+                server.Start(port);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+
+        ArrayList<PersonData> peopleList = ExcelParser.parseAll(filePath);
+        ArrayList<ArrayList<PersonData>> membersOfFamilies = new ArrayList<>();
+        ArrayList<Family> families = new ArrayList<>();
 
         for(int i = 0; i < ExcelParser.GetFamilyCount(filePath); i++)
         {
@@ -44,24 +54,13 @@ public class Main
             for(PersonData data : membersOfFamilies.get(i))
                 families.get(i).AddPerson(data);
 
-            families.get(i).ValidateFamily();
+            families.get(i).ValidateFamily(peopleList);
             godotFamilies.get(i).AddPerson(families.get(i).rootNode);
         }
 
-        int port = 8080;
-
-        WebServer server = new WebServer();
-        new Thread(() -> {
-            try {
-                server.Start(port);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-
         System.out.println();
 
-        FamilyTreeMenu();
+        FamilyTreeMenu(families, peopleList);
     }
 
     public static String GetGodotTree()
@@ -76,7 +75,7 @@ public class Main
         return "" + gson.toJson(godotData);
     }
 
-    public static void FamilyTreeMenu()
+    public static void FamilyTreeMenu(ArrayList<Family> families, ArrayList<PersonData> personData)
     {
         while(true)
         {
@@ -90,11 +89,11 @@ public class Main
                     System.out.println("Sistemden çıkış yapılıyor...");
                     System.exit(0);
                 }
-                case "1" -> Menu_FindPeopleWithNoChildren();
-                case "3" -> Menu_FindPeopleWithSpecificBloodType();
-                case "7" -> Menu_ShowFamilyTreeOfSpecificPerson();
-                case "8" -> Menu_CalculateGenerationCount();
-                case "9" -> Menu_CalculateGenerationsAfterPerson();
+                case "1" -> Menu_FindPeopleWithNoChildren(families, personData);
+                case "3" -> Menu_FindPeopleWithSpecificBloodType(families, personData);
+                case "7" -> Menu_ShowFamilyTreeOfSpecificPerson(families, personData);
+                case "8" -> Menu_CalculateGenerationCount(families);
+                case "9" -> Menu_CalculateGenerationsAfterPerson(families);
 
                 default -> {
                     System.out.println(".------------------------------------------.");
@@ -102,6 +101,8 @@ public class Main
                     System.out.println("'------------------------------------------'\n");
                 }
             }
+
+            System.gc();
         }
     }
 
@@ -121,25 +122,28 @@ public class Main
         System.out.print("Seçiminiz: ");
     }
 
-    public static void Menu_ShowFamilyTreeOfSpecificPerson()
+    public static void Menu_ShowFamilyTreeOfSpecificPerson(ArrayList<Family> families, ArrayList<PersonData> personData)
     {
         System.out.println("\n-----  Belirtilen Kişinin Soy Ağacını Göster  -----\n");
 
         System.out.print("Kişinin ID'sini giriniz: ");
         int wantedID = input.nextInt();
-        Person wantedPerson = GetPersonFromID(wantedID);
+
+        Person aPerson = GetPersonFromID(wantedID, families);
+        Person wantedPerson = new Person(GetPersonDataFromID(wantedID, personData), aPerson.mother, aPerson.father, aPerson.spouse, aPerson.children);
+
         Family wantedFamily = new Family(0);
 
         AddPersonToFamilyRecursive(wantedPerson, wantedFamily);
-        wantedFamily.ValidateFamily();
-        SetRelationOfPersonRecursive(wantedFamily.rootNode, "", false);
+        wantedFamily.ValidateFamily(personData);
+        SetRelationOfPersonRecursive(wantedFamily.rootNode, "", false, false, true);
 
         godotData.familyTreeOfSpecificPerson.AddPerson(wantedFamily.rootNode);
 
         System.out.println("\n" + wantedPerson.data.name + " " + wantedPerson.data.surname + " kişisinin soy ağacı oluşturuldu.");
 
-        //PrintTreeRecursive(wantedFamily.rootNode, 0, 0, wantedFamily.rootNode.children.size() - 1, false);
-        //System.out.println("\n" + GetGodotData() + "\n");
+        PrintTreeRecursive(wantedFamily.rootNode, 0, 0, wantedFamily.rootNode.children.size() - 1, false);
+        System.out.println("\n" + GetGodotData() + "\n");
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
         input.nextLine();
@@ -160,7 +164,7 @@ public class Main
             AddPersonToFamilyRecursive(child, familyToAdded);
     }
 
-    public static void SetRelationOfPersonRecursive(Person root, String relation, boolean isNotStart)
+    public static void SetRelationOfPersonRecursive(Person root, String relation, boolean isNotStart, boolean upward, boolean checkSpouse)
     {
         if(isNotStart)
             root.data.surname += " (";
@@ -169,33 +173,75 @@ public class Main
 
         root.data.surname += relation;
 
-        if(root.spouse != null)
+        if(!upward)
         {
-            if(relation.endsWith("ı") || relation.endsWith("a"))
-                relation += "nın ";
-            else if(relation.endsWith("i") || relation.endsWith("e"))
-                relation += "nin ";
-            else if(relation.endsWith("u") || relation.endsWith("o"))
-                relation += "nun ";
-            else if(relation.endsWith("ü") || relation.endsWith("ö"))
-                relation += "nün ";
+            if (root.spouse != null && checkSpouse) {
+                if (relation.endsWith("ı") || relation.endsWith("a"))
+                    relation += "nın ";
+                else if (relation.endsWith("i") || relation.endsWith("e"))
+                    relation += "nin ";
+                else if (relation.endsWith("u") || relation.endsWith("o"))
+                    relation += "nun ";
+                else if (relation.endsWith("ü") || relation.endsWith("ö"))
+                    relation += "nün ";
 
-            SetRelationOfPersonRecursive(root.spouse, relation + "eşi", true);
+                SetRelationOfPersonRecursive(root.spouse, relation + "eşi", true, false, false);
+            }
+
+            if (!root.children.isEmpty() && checkSpouse) {
+                if (relation.endsWith("ı") || relation.endsWith("a"))
+                    relation += "nın ";
+                else if (relation.endsWith("i") || relation.endsWith("e"))
+                    relation += "nin ";
+                else if (relation.endsWith("u") || relation.endsWith("o"))
+                    relation += "nun ";
+                else if (relation.endsWith("ü") || relation.endsWith("ö"))
+                    relation += "nün ";
+
+                for (Person child : root.children)
+                    SetRelationOfPersonRecursive(child, relation + (child.data.gender ? "oğlu" : "kızı"), true, false, true);
+            }
         }
-
-        if(!root.children.isEmpty())
+        else
         {
-            if(relation.endsWith("ı") || relation.endsWith("a"))
-                relation += "nın ";
-            else if(relation.endsWith("i") || relation.endsWith("e"))
-                relation += "nin ";
-            else if(relation.endsWith("u") || relation.endsWith("o"))
-                relation += "nun ";
-            else if(relation.endsWith("ü") || relation.endsWith("ö"))
-                relation += "nün ";
+            if (root.spouse != null && checkSpouse) {
+                if (relation.endsWith("ı") || relation.endsWith("a"))
+                    relation += "nın ";
+                else if (relation.endsWith("i") || relation.endsWith("e"))
+                    relation += "nin ";
+                else if (relation.endsWith("u") || relation.endsWith("o"))
+                    relation += "nun ";
+                else if (relation.endsWith("ü") || relation.endsWith("ö"))
+                    relation += "nün ";
 
-            for(Person child : root.children)
-                SetRelationOfPersonRecursive(child, relation + (child.data.gender ? "oğlu" : "kızı"), true);
+                SetRelationOfPersonRecursive(root.spouse, relation + "eşi", true, true, false);
+            }
+
+            if (root.mother != null) {
+                if (relation.endsWith("ı") || relation.endsWith("a"))
+                    relation += "nın ";
+                else if (relation.endsWith("i") || relation.endsWith("e"))
+                    relation += "nin ";
+                else if (relation.endsWith("u") || relation.endsWith("o"))
+                    relation += "nun ";
+                else if (relation.endsWith("ü") || relation.endsWith("ö"))
+                    relation += "nün ";
+
+                SetRelationOfPersonRecursive(root.mother, relation + "annesi", true, true, true);
+            }
+
+            if (root.father != null && checkSpouse) {
+                if (relation.endsWith("ı") || relation.endsWith("a"))
+                    relation += "nın ";
+                else if (relation.endsWith("i") || relation.endsWith("e"))
+                    relation += "nin ";
+                else if (relation.endsWith("u") || relation.endsWith("o"))
+                    relation += "nun ";
+                else if (relation.endsWith("ü") || relation.endsWith("ö"))
+                    relation += "nün ";
+
+                SetRelationOfPersonRecursive(root.father, relation + "babası", true, true, false);
+            }
         }
 
         if(isNotStart)
@@ -204,13 +250,13 @@ public class Main
         root.data.surname = root.data.surname.trim();
     }
 
-    public static void Menu_CalculateGenerationsAfterPerson()
+    public static void Menu_CalculateGenerationsAfterPerson(ArrayList<Family> families)
     {
         System.out.println("\n-----  Belirtilen Kişiden Sonra Kaç Nesil Geldiğini Hesapla  -----\n");
 
         System.out.print("Kişinin ID'sini giriniz: ");
         int wantedID = input.nextInt();
-        Person wantedPerson = GetPersonFromID(wantedID);
+        Person wantedPerson = GetPersonFromID(wantedID, families);
 
         tempGenerationCounter = 0;
         CalculateGenerationCountRecursive(wantedPerson, 0);
@@ -225,7 +271,7 @@ public class Main
         input.nextLine();
     }
 
-    public static Person GetPersonFromID(int ID)
+    public static Person GetPersonFromID(int ID, ArrayList<Family> families)
     {
         tempPerson = null;
 
@@ -269,7 +315,7 @@ public class Main
         System.out.print("Seçiminiz: ");
     }
 
-    public static void Menu_FindPeopleWithSpecificBloodType()
+    public static void Menu_FindPeopleWithSpecificBloodType(ArrayList<Family> families, ArrayList<PersonData> personData)
     {
         System.out.println("\n-----  Belirtilen Kan Grubuna Sahip Kişileri Bul  -----\n");
 
@@ -320,7 +366,7 @@ public class Main
         {
             System.out.println("Kan grubu " + wantedBloodType + " olan kişiler:");
             for(Integer personID : godotData.peopleIDsWithSpecificBlood)
-                System.out.println(personID + ": " + GetPersonDataFromID(personID).name + " " + GetPersonDataFromID(personID).surname);
+                System.out.println(personID + ": " + GetPersonDataFromID(personID, personData).name + " " + GetPersonDataFromID(personID, personData).surname);
         }
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
@@ -336,7 +382,7 @@ public class Main
             FindPeopleWithSpecificBloodTypeRecursive(person, wantedBloodType);
     }
 
-    public static void Menu_CalculateGenerationCount()
+    public static void Menu_CalculateGenerationCount(ArrayList<Family> families)
     {
         System.out.println("\n-----  Soy Ağacının Kaç Nesilden Oluştuğunu Hesapla  -----\n");
 
@@ -365,7 +411,7 @@ public class Main
             CalculateGenerationCountRecursive(person, currentGen + 1);
     }
 
-    public static void Menu_FindPeopleWithNoChildren()
+    public static void Menu_FindPeopleWithNoChildren(ArrayList<Family> families, ArrayList<PersonData> personData)
     {
         System.out.println("\n-----  Çocuğu Olmayanları Bul  -----\n");
 
@@ -384,7 +430,7 @@ public class Main
         {
             System.out.print("Sıralanmamış liste: [");
             for (int j = 0; j < godotData.peopleIDsWithNoChildren.size(); j++)
-                System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j)).name + " " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j)).surname
+                System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j), personData).name + " " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j), personData).surname
                         + (j == godotData.peopleIDsWithNoChildren.size() - 1 ? "]\n\n" : ", "));
 
             System.out.println("Sıralama başlıyor... (Sıralama için kullanılan algoritma: Selection sort)");
@@ -396,12 +442,12 @@ public class Main
                 for (int j = i + 1; j < godotData.peopleIDsWithNoChildren.size(); j++)
                 {
                     // Birinci kişinin doğum yılı bilgisi alınıyor.
-                    PersonData thePerson = GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(index));
+                    PersonData thePerson = GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(index), personData);
                     String[] theData = thePerson.birthdate.split("[-/.]");
                     int theYear = Integer.parseInt(theData[theData.length - 1]);
 
                     // İkinci kişinin doğum yılı bilgisi alınıyor.
-                    PersonData theOtherPerson = GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j));
+                    PersonData theOtherPerson = GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j), personData);
                     String[] theOtherData = theOtherPerson.birthdate.split("[-/.]");
                     int theOtherYear = Integer.parseInt(theOtherData[theOtherData.length - 1]);
 
@@ -415,14 +461,14 @@ public class Main
 
                 System.out.print((i + 1) + ". adım sonunda liste: [");
                 for (int j = 0; j < godotData.peopleIDsWithNoChildren.size(); j++)
-                    System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j)).name + " " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j)).surname
+                    System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j), personData).name + " " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j), personData).surname
                             + (j == godotData.peopleIDsWithNoChildren.size() - 1 ? "]\n" : ", "));
             }
             System.out.println("Sıralama tamamlandı.");
 
             System.out.print("\nÇocuğu olmayan kişiler (Yaş sıralaması: büyükten küçüğe)\n");
             for (Integer personID : godotData.peopleIDsWithNoChildren)
-                System.out.println(personID + ": " + GetPersonDataFromID(personID).name + " " + GetPersonDataFromID(personID).surname);
+                System.out.println(personID + ": " + GetPersonDataFromID(personID, personData).name + " " + GetPersonDataFromID(personID, personData).surname);
         }
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
@@ -439,7 +485,7 @@ public class Main
                 FindPeopleWithNoChildrenRecursive(person);
     }
 
-    public static PersonData GetPersonDataFromID(int ID)
+    public static PersonData GetPersonDataFromID(int ID, ArrayList<PersonData> peopleList)
     {
         for(PersonData data : peopleList)
             if(data.id == ID)

@@ -10,7 +10,7 @@ public class WebServer
     public void Start(int port) throws IOException
     {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-        System.out.println("\n[Server started at " + port + "]\n");
+        System.out.println("\n[Server started at " + port + "]");
 
         server.createContext("/", new RootHandler());
         server.createContext("/get", new GetHandler());

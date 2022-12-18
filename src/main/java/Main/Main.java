@@ -178,14 +178,14 @@ public class Main
         System.out.print("Kişinin ID'sini giriniz: ");
         int wantedID = input.nextInt();
 
+        Family wantedFamily = new Family(0);
+
         Person aPerson = GetPersonFromID(wantedID, families);
         Person wantedPerson = new Person(GetPersonDataFromID(wantedID, personData), aPerson.mother, aPerson.father, aPerson.spouse, aPerson.children);
 
-        Family wantedFamily = new Family(0);
-
         AddPersonToFamilyRecursive(wantedPerson, wantedFamily, personData);
         wantedFamily.ValidateFamily(personData);
-        SetRelationOfPersonRecursive(wantedFamily.rootNode, "", false, false, true);
+        SetRelationOfPersonRecursive(wantedFamily.rootNode, "", false, false, true, personData);
 
         godotData.familyTreeOfSpecificPerson.AddPerson(wantedFamily.rootNode);
 
@@ -213,20 +213,27 @@ public class Main
             AddPersonToFamilyRecursive(child, familyToAdded, peopleList);
     }
 
-    public static void SetRelationOfPersonRecursive(Person root, String relation, boolean isNotStart, boolean upward, boolean checkSpouse)
+    public static void SetRelationOfPersonRecursive(Person somePerson, String relation, boolean isNotStart, boolean upward, boolean checkSpouse, ArrayList<PersonData> peopleList)
     {
-        if(isNotStart)
-            root.data.surname += " (";
-        else
-            root.data.surname += " ";
+        for(PersonData deyta : peopleList)
+            if(deyta.id == somePerson.data.id)
+            {
+                somePerson.data.surname = deyta.surname;
+                break;
+            }
 
-        root.data.surname += relation;
+        if(isNotStart)
+            somePerson.data.surname += " (";
+        else
+            somePerson.data.surname += " ";
+
+        somePerson.data.surname += relation;
 
         String temp = relation;
 
         if(!upward)
         {
-            if (root.spouse != null && checkSpouse)
+            if (somePerson.spouse != null && checkSpouse)
             {
                 if (relation.endsWith("ı") || relation.endsWith("a"))
                     relation += "nın ";
@@ -237,12 +244,12 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                SetRelationOfPersonRecursive(root.spouse, relation + (root.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, false, false);
+                SetRelationOfPersonRecursive(somePerson.spouse, relation + (somePerson.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, false, false, peopleList);
             }
 
             relation = temp;
 
-            if (!root.children.isEmpty() && checkSpouse)
+            if (!somePerson.children.isEmpty() && checkSpouse)
             {
                 if (relation.endsWith("ı") || relation.endsWith("a"))
                     relation += "nın ";
@@ -253,13 +260,13 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                for (Person child : root.children)
-                    SetRelationOfPersonRecursive(child, relation + (child.data.gender ? "oğlu" : "kızı"), true, false, true);
+                for (Person child : somePerson.children)
+                    SetRelationOfPersonRecursive(child, relation + (child.data.gender ? "oğlu" : "kızı"), true, false, true, peopleList);
             }
         }
         else
         {
-            if (root.spouse != null && checkSpouse)
+            if (somePerson.spouse != null && checkSpouse)
             {
                 if (relation.endsWith("ı") || relation.endsWith("a"))
                     relation += "nın ";
@@ -270,12 +277,12 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                SetRelationOfPersonRecursive(root.spouse, relation + (root.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, true, false);
+                SetRelationOfPersonRecursive(somePerson.spouse, relation + (somePerson.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, true, false, peopleList);
             }
 
             relation = temp;
 
-            if (root.mother != null)
+            if (somePerson.mother != null)
             {
                 if (relation.endsWith("ı") || relation.endsWith("a"))
                     relation += "nın ";
@@ -286,12 +293,12 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                SetRelationOfPersonRecursive(root.mother, relation + "annesi", true, true, true);
+                SetRelationOfPersonRecursive(somePerson.mother, relation + "annesi", true, true, true, peopleList);
             }
 
             relation = temp;
 
-            if (root.father != null && checkSpouse)
+            if (somePerson.father != null && checkSpouse)
             {
                 if (relation.endsWith("ı") || relation.endsWith("a"))
                     relation += "nın ";
@@ -302,14 +309,14 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                SetRelationOfPersonRecursive(root.father, relation + "babası", true, true, false);
+                SetRelationOfPersonRecursive(somePerson.father, relation + "babası", true, true, false, peopleList);
             }
         }
 
         if(isNotStart)
-            root.data.surname += ")";
+            somePerson.data.surname += ")";
 
-        root.data.surname = root.data.surname.trim();
+        somePerson.data.surname = somePerson.data.surname.trim();
     }
 
     public static void Menu_CalculateGenerationsAfterPerson(ArrayList<Family> families)

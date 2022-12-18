@@ -28,7 +28,13 @@ public class Family
         if(root == null)
             return new Person(personDataToAdd);
 
-        root.data.surname = Main.GetPersonDataFromID(root.data.id, peopleList).surname;
+        for(PersonData data : peopleList)
+            if(data.id == root.data.id)
+            {
+                root.data.surname = data.surname;
+                break;
+            }
+        //root.data.surname = Main.GetPersonDataFromID(root.data.id, peopleList).surname;
 
         // Eş stringini bölüyoruz çünkü herkesin eşinde soyadı bulunmuyor ve bunu göz önüne almamız lazım.
         String[] divided = GetSpouseData(root.data.surname, root.data.spouse);
@@ -83,7 +89,13 @@ public class Family
         // Yorumlanmış kodlar spouse String'inde spouseID bulunmaması durumunda geçerli olup
         // yorumdan çıkarıldığı takdirde önceden yorumlanmamış eşdeğer kodların yorumlanmasını gerektirmektedir.
 
-        root.data.surname = Main.GetPersonDataFromID(root.data.id, peopleList).surname;
+        for(PersonData data : peopleList)
+            if(data.id == root.data.id)
+            {
+                root.data.surname = data.surname;
+                break;
+            }
+        //root.data.surname = Main.GetPersonDataFromID(root.data.id, peopleList).surname;
 
         if(root.data.maritalStatus.equalsIgnoreCase("Evli") && root.spouse == null)
         {

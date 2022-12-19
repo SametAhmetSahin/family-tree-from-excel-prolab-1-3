@@ -13,14 +13,12 @@ import Tree.GodotFamily;
 import com.google.gson.*;
 
 import WebServer.*;
-import com.google.gson.annotations.Expose;
 
 public class Main
 {
     static String filePath = "test.xlsx";
     static Scanner input = new Scanner(System.in);
 
-    @Expose
     public static ArrayList<PersonData> peopleList;
     public static GodotData godotData = new GodotData();
     public static ArrayList<GodotFamily> godotFamilies = new ArrayList<>();
@@ -99,11 +97,11 @@ public class Main
                     System.exit(0);
                 }
                 case "1" -> Menu_FindPeopleWithNoChildren(families, personData);
-                case "3" -> Menu_FindPeopleWithSpecificBloodType(families, personData);
-                case "4" -> Menu_FindContinuedProfessions(families, personData);
-                case "7" -> Menu_ShowFamilyTreeOfSpecificPerson(families, personData);
-                case "8" -> Menu_CalculateGenerationCount(families);
-                case "9" -> Menu_CalculateGenerationsAfterPerson(families);
+                case "2" -> Menu_FindPeopleWithSpecificBloodType(families, personData);
+                case "3" -> Menu_FindContinuedProfessions(families, personData);
+                case "4" -> Menu_ShowFamilyTreeOfSpecificPerson(families, personData);
+                case "5" -> Menu_CalculateGenerationCount(families);
+                case "6" -> Menu_CalculateGenerationsAfterPerson(families);
 
                 default -> {
                     System.out.println(".------------------------------------------.");
@@ -120,14 +118,14 @@ public class Main
     {
         System.out.println("YILDIZsoft Soy Ağacı Sistemi\n");
         System.out.println("1) Çocuğu olmayanları bul.");   // Tamamlandı
-        System.out.println("2) Üvey kardeşleri bul.");
-        System.out.println("3) Belirtilen kan grubuna sahip kişileri bul.");    // Tamamlandı
-        System.out.println("4) Ata mesleğini devam ettiren kişileri bul.");     // Tamamlandı
-        System.out.println("5) Aynı isme sahip kişileri bul.");
-        System.out.println("6) Belirtilen iki kişinin birbirine yakınlığını bul.");
-        System.out.println("7) Belirtilen kişinin soy ağacını göster.");    // Tamamlandı
-        System.out.println("8) Soy ağacının kaç nesilden oluştuğunu hesapla."); // Tamamlandı
-        System.out.println("9) Belirtilen kişiden sonra kaç nesil geldiğini hesapla.\n");   // Tamamlandı
+        //System.out.println("2) Üvey kardeşleri bul.");
+        System.out.println("2) Belirtilen kan grubuna sahip kişileri bul.");    // Tamamlandı
+        System.out.println("3) Ata mesleğini devam ettiren kişileri bul.");     // Tamamlandı
+        //System.out.println("5) Aynı isme sahip kişileri bul.");
+        //System.out.println("6) Belirtilen iki kişinin birbirine yakınlığını bul.");
+        System.out.println("4) Belirtilen kişinin soy ağacını göster.");    // Tamamlandı
+        System.out.println("5) Soy ağacının kaç nesilden oluştuğunu hesapla."); // Tamamlandı
+        System.out.println("6) Belirtilen kişiden sonra kaç nesil geldiğini hesapla.\n");   // Tamamlandı
         System.out.println("0) Çıkış\n");
         System.out.print("Seçiminiz: ");
     }

@@ -13,12 +13,14 @@ import Tree.GodotFamily;
 import com.google.gson.*;
 
 import WebServer.*;
+import com.google.gson.annotations.Expose;
 
 public class Main
 {
     static String filePath = "test.xlsx";
     static Scanner input = new Scanner(System.in);
 
+    @Expose
     public static ArrayList<PersonData> peopleList;
     public static GodotData godotData = new GodotData();
     public static ArrayList<GodotFamily> godotFamilies = new ArrayList<>();

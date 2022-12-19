@@ -24,6 +24,7 @@ public class Main
     public static ArrayList<GodotFamily> godotFamilies = new ArrayList<>();
     public static int tempGenerationCounter = 0;
     public static Person tempPerson;
+    public static int problemIndex = 0;
 
     public static void main(String[] args) throws IOException
     {
@@ -73,7 +74,30 @@ public class Main
     public static String GetGodotData()
     {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return "" + gson.toJson(godotData);
+
+        switch(problemIndex)
+        {
+            case 0 -> {
+                return "" + gson.toJson(godotData.peopleIDsWithNoChildren);
+            }
+            case 1 -> {
+                return "" + gson.toJson(godotData.peopleIDsWithSpecificBlood);
+            }
+            case 2 -> {
+                return "" + gson.toJson(godotData.continuedProfessions);
+            }
+            case 3 -> {
+                return "" + gson.toJson(godotData.familyTreeOfSpecificPerson);
+            }
+            case 4 -> {
+                return "" + gson.toJson(godotData.generationCounts);
+            }
+            case 5 -> {
+                return "" + gson.toJson(godotData.generationCountAfterPerson);
+            }
+        }
+
+        return "";
     }
 
     public static String GetGodotPersonData()
@@ -134,6 +158,7 @@ public class Main
     {
         System.out.println("\n-----  Ata Mesleğini Devam Ettiren Kişileri Bul  -----\n");
         godotData.continuedProfessions.clear();
+        problemIndex = 2;
 
         for(Family family : families)
             FindContinuedProfessionsRecursive(family.rootNode);
@@ -148,6 +173,8 @@ public class Main
                 case 3 -> System.out.println(GetPersonDataFromID(data[0], personData).id + ": " + GetPersonDataFromID(data[0], personData).name + " " + GetPersonDataFromID(data[0], personData).surname + " hem babasının hem de dedesinin mesleğini devam ettiriyor.");
             }
         }
+
+        System.out.println("\n" + GetGodotData());
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
         input.nextLine();
@@ -182,6 +209,8 @@ public class Main
     {
         System.out.println("\n-----  Belirtilen Kişinin Soy Ağacını Göster  -----\n");
 
+        problemIndex = 3;
+
         System.out.print("Kişinin ID'sini giriniz: ");
         int wantedID = input.nextInt();
 
@@ -199,7 +228,8 @@ public class Main
         System.out.println("\n" + wantedPerson.data.name + " " + wantedPerson.data.surname + " kişisinin soy ağacı oluşturuldu.");
 
         PrintTreeRecursive(wantedFamily.rootNode, 0, 0, wantedFamily.rootNode.children.size() - 1, false);
-        System.out.println("\n" + GetGodotData() + "\n");
+
+        System.out.println("\n" + GetGodotData());
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
         input.nextLine();
@@ -330,6 +360,8 @@ public class Main
     {
         System.out.println("\n-----  Belirtilen Kişiden Sonra Kaç Nesil Geldiğini Hesapla  -----\n");
 
+        problemIndex = 5;
+
         System.out.print("Kişinin ID'sini giriniz: ");
         int wantedID = input.nextInt();
         Person wantedPerson = GetPersonFromID(wantedID, families);
@@ -341,6 +373,8 @@ public class Main
         godotData.generationCountAfterPerson[1] = tempGenerationCounter;
 
         System.out.println(wantedPerson.data.name + " " + wantedPerson.data.surname + " kişisinden sonra " + (tempGenerationCounter == 0 ? "nesil gelmemektedir." : tempGenerationCounter + " nesil gelmektedir."));
+
+        System.out.println("\n" + GetGodotData());
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
         input.nextLine();
@@ -395,6 +429,8 @@ public class Main
     {
         System.out.println("\n-----  Belirtilen Kan Grubuna Sahip Kişileri Bul  -----\n");
 
+        problemIndex = 1;
+
         String selection, wantedBloodType = "";
         boolean illegal;
 
@@ -445,6 +481,8 @@ public class Main
                 System.out.println(personID + ": " + GetPersonDataFromID(personID, personData).name + " " + GetPersonDataFromID(personID, personData).surname);
         }
 
+        System.out.println("\n" + GetGodotData());
+
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
         input.nextLine();
     }
@@ -462,6 +500,8 @@ public class Main
     {
         System.out.println("\n-----  Soy Ağacının Kaç Nesilden Oluştuğunu Hesapla  -----\n");
 
+        problemIndex = 4;
+
         godotData.generationCounts.clear();
 
         for(Family family : families)
@@ -473,6 +513,8 @@ public class Main
 
         for(int i = 0; i < godotData.generationCounts.size(); i++)
             System.out.println((i + 1) + ". soy ağacı " + godotData.generationCounts.get(i) + " nesilden oluşmaktadır.");
+
+        System.out.println("\n" + GetGodotData());
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
         input.nextLine();
@@ -490,6 +532,8 @@ public class Main
     public static void Menu_FindPeopleWithNoChildren(ArrayList<Family> families, ArrayList<PersonData> personData)
     {
         System.out.println("\n-----  Çocuğu Olmayanları Bul  -----\n");
+
+        problemIndex = 0;
 
         godotData.peopleIDsWithNoChildren.clear();
 
@@ -546,6 +590,8 @@ public class Main
             for (Integer personID : godotData.peopleIDsWithNoChildren)
                 System.out.println(personID + ": " + GetPersonDataFromID(personID, personData).name + " " + GetPersonDataFromID(personID, personData).surname);
         }
+
+        System.out.println("\n" + GetGodotData());
 
         System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
         input.nextLine();

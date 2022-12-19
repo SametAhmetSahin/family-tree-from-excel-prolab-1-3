@@ -1,0 +1,1936 @@
+package Parser;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import Person.PersonData;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+
+public class ExcelParser
+{
+    public static ArrayList<PersonData> parse(String filepath, int sheet_index) throws IOException
+    {
+        FileInputStream fis = new FileInputStream(filepath);
+        XSSFWorkbook wb = new XSSFWorkbook(fis);
+
+        wb.getNumberOfSheets();
+
+        XSSFSheet sheet = wb.getSheetAt(sheet_index);
+        ArrayList<PersonData> personDataArrayList = new ArrayList<>();
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++)
+        {
+            Row row = sheet.getRow(i);
+            PersonData data = new PersonData();
+
+            data.id = row.getCell(0) != null ? (int)row.getCell(0).getNumericCellValue() : 0;
+
+            data.name = row.getCell(1) != null ? row.getCell(1).getStringCellValue() : "";
+            data.surname = row.getCell(2) != null ? row.getCell(2).getStringCellValue() : "";
+            data.birthdate = row.getCell(3) != null ? row.getCell(3).toString() : "";
+            data.spouse = row.getCell(4) != null ? row.getCell(4).getStringCellValue() : "";
+            data.motherName = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : "";
+            data.fatherName = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : "";
+            data.bloodType = row.getCell(7) != null ? row.getCell(7).getStringCellValue() : "";
+            data.profession = row.getCell(8) != null ? row.getCell(8).getStringCellValue() : "";
+            data.maritalStatus = row.getCell(9) != null ? row.getCell(9).getStringCellValue() : "";
+            data.maidenName = row.getCell(10) != null ? row.getCell(10).getStringCellValue() : "";
+
+            data.gender = row.getCell(11) != null ? row.getCell(11).getStringCellValue().equalsIgnoreCase("Erkek") : false;
+
+            boolean checkIdentity = false;
+
+            for(PersonData deyta : personDataArrayList)
+                if (deyta.id == data.id)
+                {
+                    checkIdentity = true;
+                    break;
+                }
+
+            if(!checkIdentity)
+                personDataArrayList.add(data);
+        }
+
+        return personDataArrayList;
+    }
+
+    public static ArrayList<PersonData> parseAll(String filepath) throws IOException
+    {
+        FileInputStream fis = new FileInputStream(filepath);
+        XSSFWorkbook wb = new XSSFWorkbook(fis);
+
+        int noOfSheets = wb.getNumberOfSheets();
+
+        ArrayList<PersonData> personDataArrayList = new ArrayList<>();
+
+        for(int j = 0; j < noOfSheets; j++)
+        {
+            XSSFSheet sheet = wb.getSheetAt(j);
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++)
+            {
+                Row row = sheet.getRow(i);
+                PersonData data = new PersonData();
+
+                data.id = row.getCell(0) != null ? (int)row.getCell(0).getNumericCellValue() : 0;
+
+                data.name = row.getCell(1) != null ? row.getCell(1).getStringCellValue() : "";
+                data.surname = row.getCell(2) != null ? row.getCell(2).getStringCellValue() : "";
+                data.birthdate = row.getCell(3) != null ? row.getCell(3).toString() : "";
+                data.spouse = row.getCell(4) != null ? row.getCell(4).getStringCellValue() : "";
+                data.motherName = row.getCell(5) != null ? row.getCell(5).getStringCellValue() : "";
+                data.fatherName = row.getCell(6) != null ? row.getCell(6).getStringCellValue() : "";
+                data.bloodType = row.getCell(7) != null ? row.getCell(7).getStringCellValue() : "";
+                data.profession = row.getCell(8) != null ? row.getCell(8).getStringCellValue() : "";
+                data.maritalStatus = row.getCell(9) != null ? row.getCell(9).getStringCellValue() : "";
+                data.maidenName = row.getCell(10) != null ? row.getCell(10).getStringCellValue() : "";
+
+                data.gender = row.getCell(11) != null ? row.getCell(11).getStringCellValue().equalsIgnoreCase("Erkek") : false;
+
+                boolean checkIdentity = false;
+
+                for(PersonData deyta : personDataArrayList)
+                    if (deyta.id == data.id)
+                    {
+                        checkIdentity = true;
+                        break;
+                    }
+
+                if(!checkIdentity)
+                    personDataArrayList.add(data);
+            }
+        }
+
+        return personDataArrayList;
+    }
+
+    public static int GetFamilyCount(String filepath) throws IOException
+    {
+        FileInputStream fis = new FileInputStream(filepath);
+        XSSFWorkbook wb = new XSSFWorkbook(fis);
+
+        return wb.getNumberOfSheets();
+    }
+}package Person;
+
+import com.google.gson.annotations.Expose;
+import java.util.ArrayList;
+
+public class GodotPerson
+{
+    @Expose
+    public PersonData data;
+    @Expose
+    public GodotPerson spouse;
+    @Expose
+    public int mother;
+    @Expose
+    public int father;
+    @Expose
+    public ArrayList<GodotPerson> children;
+
+    public GodotPerson()
+    {
+        this.data = new PersonData();
+        this.mother = 0;
+        this.father = 0;
+        this.spouse = null;
+        this.children = new ArrayList<>();
+    }
+
+    public GodotPerson(Person person, boolean createNonExistentSpouse)
+    {
+        this.data = person.data;
+        this.mother = person.mother == null ? 0 : person.mother.data.id;
+        this.father = person.father == null ? 0 : person.father.data.id;
+        this.spouse = person.spouse == null || createNonExistentSpouse ? null : new GodotPerson(person.spouse, true);
+        this.children = new ArrayList<>();
+
+        if(!person.children.isEmpty() && !createNonExistentSpouse)
+            for(Person child : person.children)
+                this.children.add(new GodotPerson(child, false));
+    }
+}
+
+package Person;
+
+import com.google.gson.annotations.Expose;
+
+public class PersonData
+{
+    @Expose
+    public int id;
+    @Expose
+    public String name;
+    @Expose
+    public String surname;
+    @Expose
+    public String birthdate;
+    @Expose
+    public String spouse;
+    @Expose
+    public String motherName;
+    @Expose
+    public String fatherName;
+    @Expose
+    public String bloodType;
+    @Expose
+    public String profession;
+    @Expose
+    public String maritalStatus;
+    @Expose
+    public String maidenName;
+    @Expose
+    public Boolean gender;
+
+    public PersonData()
+    {
+        this.id = 0;
+        this.name = "Bilmemkim";
+        this.surname = "Bilinmeyengiloğlu";
+        this.birthdate = "Bilinmiyor";
+        this.spouse = "Bilinmiyor";
+        this.motherName = "Bilinmiyor";
+        this.fatherName = "Bilinmiyor";
+        this.bloodType = "Bilinmiyor";
+        this.profession = "Bilinmiyor";
+        this.maritalStatus = "Bilinmiyor";
+        this.maidenName = "Bilinmiyor";
+        this.gender = false;
+    }
+
+    public PersonData(int ID, PersonData data)
+    {
+        this.id = ID;
+        this.name = data.name;
+        this.surname = data.surname;
+        this.birthdate = data.birthdate;
+        this.spouse = data.spouse;
+        this.motherName = data.motherName;
+        this.fatherName = data.fatherName;
+        this.bloodType = data.bloodType;
+        this.profession = data.profession;
+        this.maritalStatus = data.maritalStatus;
+        this.maidenName = data.maidenName;
+        this.gender = data.gender;
+    }
+
+    public PersonData(int ID, String Name, String Surname, String Marital_Status, boolean Gender)
+    {
+        this.id = ID;
+        this.name = Name;
+        this.surname = Surname;
+        this.birthdate = "Bilinmiyor";
+        this.spouse = "Bilinmiyor";
+        this.motherName = "Bilinmiyor";
+        this.fatherName = "Bilinmiyor";
+        this.bloodType = "Bilinmiyor";
+        this.profession = "Bilinmiyor";
+        this.maritalStatus = Marital_Status;
+        this.maidenName = "Bilinmiyor";
+        this.gender = Gender;
+    }
+
+    public PersonData(int ID, String Name, String Surname, String Birthday, String Spouse, String MotherName, String FatherName, String BloodType, String Profession, String MaritalStatus, String MaidenName, boolean Gender)
+    {
+        this.id = ID;
+        this.name = Name;
+        this.surname = Surname;
+        this.birthdate = Birthday;
+        this.spouse = Spouse;
+        this.motherName = MotherName;
+        this.fatherName = FatherName;
+        this.bloodType = BloodType;
+        this.profession = Profession;
+        this.maritalStatus = MaritalStatus;
+        this.maidenName = MaidenName;
+        this.gender = Gender;
+    }
+}
+package Person;
+
+import java.util.ArrayList;
+
+public class Person
+{
+    public PersonData data;
+    public Person spouse;
+    public Person mother;
+    public Person father;
+    public ArrayList<Person> children;
+
+    public Person()
+    {
+        this.data = new PersonData();
+        this.mother = null;
+        this.father = null;
+        this.spouse = null;
+        this.children = new ArrayList<>();
+    }
+
+    public Person(Person person)
+    {
+        this.data = person.data;
+        this.mother = person.mother;
+        this.father = person.father;
+        this.spouse = person.spouse;
+        this.children = person.children;
+    }
+
+    public Person(PersonData Data)
+    {
+        this.data = Data;
+        this.mother = null;
+        this.father = null;
+        this.spouse = null;
+        this.children = new ArrayList<>();
+    }
+
+    public Person(PersonData Data, Person WifeBand)
+    {
+        this.data = Data;
+        this.mother = null;
+        this.father = null;
+        this.spouse = WifeBand;
+        this.children = new ArrayList<>();
+    }
+
+    public Person(PersonData Data, Person WifeBand, ArrayList<Person> Children)
+    {
+        this.data = Data;
+        this.mother = null;
+        this.father = null;
+        this.spouse = WifeBand;
+        this.children = Children;
+    }
+
+    public Person(PersonData Data, Person Mother, Person Father)
+    {
+        this.data = Data;
+        this.mother = Mother;
+        this.father = Father;
+        this.children = new ArrayList<>();
+    }
+
+    public Person(PersonData Data, Person Mother, Person Father, Person WifeBand)
+    {
+        this.data = Data;
+        this.mother = Mother;
+        this.father = Father;
+        this.spouse = WifeBand;
+    }
+
+    public Person(PersonData Data, Person Mother, Person Father, Person WifeBand, ArrayList<Person> Children)
+    {
+        this.data = Data;
+        this.mother = Mother;
+        this.father = Father;
+        this.spouse = WifeBand;
+        this.children = Children;
+    }
+}
+
+package Tree;
+
+import Person.*;
+import com.google.gson.annotations.Expose;
+
+public class GodotFamily
+{
+    @Expose
+    public int nodeID;
+    @Expose
+    public GodotPerson rootNode = null;
+
+    public GodotFamily(int id)
+    {
+        this.nodeID = id;
+    }
+
+    public void AddPerson(Person person)
+    {
+        this.rootNode = new GodotPerson(person, false);
+    }
+}
+package Tree;
+
+import Main.Main;
+import Person.*;
+
+import java.util.ArrayList;
+
+public class Family
+{
+    public int nodeID;
+    public Person rootNode = null;
+
+    public Family(int id)
+    {
+        this.nodeID = id;
+    }
+
+    public void AddPerson(PersonData personDataToAdd, ArrayList<PersonData> peopleList)
+    {
+        this.rootNode = AddPersonRecursive(this.rootNode, personDataToAdd, peopleList);
+    }
+
+    Person AddPersonRecursive(Person root, PersonData personDataToAdd, ArrayList<PersonData> peopleList)
+    {
+        // Yorumlanmış kodlar spouse String'inde spouseID bulunmaması durumunda geçerli olup
+        // yorumdan çıkarıldığı takdirde önceden yorumlanmamış eşdeğer kodların yorumlanmasını gerektirmektedir.
+
+        if(root == null)
+            return new Person(personDataToAdd);
+
+        for(PersonData data : peopleList)
+            if(data.id == root.data.id)
+            {
+                root.data.surname = data.surname;
+                break;
+            }
+        //root.data.surname = Main.GetPersonDataFromID(root.data.id, peopleList).surname;
+
+        // Eş stringini bölüyoruz çünkü herkesin eşinde soyadı bulunmuyor ve bunu göz önüne almamız lazım.
+        String[] divided = GetSpouseData(root.data.surname, root.data.spouse);
+
+        if(!root.data.spouse.isEmpty())
+        {
+            // Eğer kökün eşi yoksa, kökün eşinin adı-soyadı ile eklenecek kişinin adı ve varsa soyadı uyuşuyorsa eş olarak ekle.
+            if (root.spouse == null && personDataToAdd.id == Integer.parseInt(divided[0]) && personDataToAdd.name.equalsIgnoreCase(divided[1]) && personDataToAdd.surname.equalsIgnoreCase(divided[2]))
+            //if(root.spouse == null && personDataToAdd.name.equalsIgnoreCase(divided[0]) && personDataToAdd.surname.equalsIgnoreCase(divided[1]))
+            {
+                root.spouse = new Person(personDataToAdd, root);
+                //System.out.println("Eş eklendi.");
+                return root;
+            }
+        }
+
+        // Eklenecek kişinin anne-baba adı köke uyuyorsa çocuk olarak ekle.
+        // Eş kontrolü kalıcı olarak kaldırıldı.
+        if(root.data.gender)
+        {
+            if(personDataToAdd.fatherName.equalsIgnoreCase(root.data.name))
+            {
+                root.children.add(new Person(personDataToAdd, root.spouse, root));
+                //System.out.println("Çocuk eklendi.");
+                return root;
+            }
+        }
+        else
+        {
+            if(personDataToAdd.motherName.equalsIgnoreCase(root.data.name))
+            {
+                root.children.add(new Person(personDataToAdd, root, root.spouse));
+                //System.out.println("Çocuk eklendi.");
+                return root;
+            }
+        }
+
+        // Eklenecek kişinin bilgileri mevcut köke uymuyorsa çocukları dolaş.
+        for(int i = 0; i < root.children.size(); i++)
+            root.children.set(i, AddPersonRecursive(root.children.get(i), personDataToAdd, peopleList));
+
+        return root;
+    }
+
+    public void ValidateFamily(ArrayList<PersonData> peopleList)
+    {
+        this.rootNode = ValidateFamilyRecursive(this.rootNode, peopleList);
+    }
+
+    Person ValidateFamilyRecursive(Person root, ArrayList<PersonData> peopleList)
+    {
+        // Yorumlanmış kodlar spouse String'inde spouseID bulunmaması durumunda geçerli olup
+        // yorumdan çıkarıldığı takdirde önceden yorumlanmamış eşdeğer kodların yorumlanmasını gerektirmektedir.
+
+        for(PersonData data : peopleList)
+            if(data.id == root.data.id)
+            {
+                root.data.surname = data.surname;
+                break;
+            }
+        //root.data.surname = Main.GetPersonDataFromID(root.data.id, peopleList).surname;
+
+        if(root.data.maritalStatus.equalsIgnoreCase("Evli") && root.spouse == null)
+        {
+            String[] spouseData = GetSpouseData(root.data.surname, root.data.spouse);
+
+            for(PersonData person : peopleList)
+            {
+                if(!spouseData[0].isBlank())
+                {
+                    if (person.id == Integer.parseInt(spouseData[0]) && person.name.equalsIgnoreCase(spouseData[1]) && person.surname.equalsIgnoreCase(spouseData[2]))
+                    //if(person.name.equalsIgnoreCase(spouseData[0]) && person.surname.equalsIgnoreCase(spouseData[1]))
+                    {
+                        root.spouse = new Person(person);
+                        break;
+                    }
+                }
+            }
+        }
+
+        for(int i = 0; i < root.children.size(); i++)
+        {
+            Person child = root.children.get(i);
+
+            if(!root.data.maritalStatus.equalsIgnoreCase("Evli") &&
+                    ((!child.data.fatherName.isEmpty() && child.father == null) ||
+                    (!child.data.motherName.isEmpty() && child.mother == null)))
+            {
+                if(child.father == null)
+                {
+                    peopleList.add(new PersonData(peopleList.size(), child.data.fatherName, child.data.surname, "Bekar", true));
+                    Person father = new Person(peopleList.get(peopleList.size() - 1), root, root.children);
+                    root.spouse = father;
+                    child.father = father;
+                }
+                if(child.mother == null)
+                {
+                    peopleList.add(new PersonData(peopleList.size(), child.data.motherName, "Bilinmeyengilkızı", "Dul", false));
+                    Person mother = new Person(peopleList.get(peopleList.size() - 1), root, root.children);
+                    root.spouse = mother;
+                    child.mother = mother;
+                }
+            }
+
+            if(root.data.maritalStatus.equalsIgnoreCase("Evli") &&
+                    ((!child.data.fatherName.isEmpty() && child.father == null) ||
+                            (!child.data.motherName.isEmpty() && child.mother == null)))
+            {
+                for(PersonData person : peopleList)
+                {
+                    //if(child.father == null)  // Bozuk versiyon
+                    if(child.father == null && person.id == Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]) && person.name.equalsIgnoreCase(child.data.fatherName) && person.surname.equalsIgnoreCase(child.data.surname))
+                    {
+                        Person father = new Person(person);
+                        root.spouse = father;
+                        child.father = father;
+                        break;
+                    }
+
+                    //if(child.mother == null)  // Bozuk versiyon
+                    if(child.mother == null && person.id == Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]) && person.name.equalsIgnoreCase(child.data.motherName) /*&& person.surname.equalsIgnoreCase(child.data.surname)*/)
+                    {
+                        Person mother = new Person(person);
+                        root.spouse = mother;
+                        child.mother = mother;
+                        break;
+                    }
+                }
+
+                if(child.father == null)
+                {
+                    peopleList.add(new PersonData(Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]), child.data.fatherName, child.data.surname, "Evli", true));
+                    Person father = new Person(peopleList.get(peopleList.size() - 1), root, root.children);
+                    root.spouse = father;
+                    child.father = father;
+                }
+                if(child.mother == null)
+                {
+                    peopleList.add(new PersonData(Integer.parseInt(GetSpouseData(child.data.surname, root.data.spouse)[0]), child.data.motherName, child.data.surname, "Evli", false));
+                    Person mother = new Person(peopleList.get(peopleList.size() - 1), root, root.children);
+                    root.spouse = mother;
+                    child.mother = mother;
+                }
+            }
+
+            root.children.set(i, child);
+            root.children.set(i, ValidateFamilyRecursive(root.children.get(i), peopleList));
+        }
+
+        return root;
+    }
+
+    public String[] GetSpouseData(String surnameOfHusband, String spouse)
+    {
+        // Yorumlanmış kodlar spouse String'inde spouseID bulunmaması durumunda geçerli olup
+        // yorumdan çıkarıldığı takdirde önceden yorumlanmamış eşdeğer kodların yorumlanmasını gerektirmektedir.
+        // İlgili kodlar eğik çizgiler ('/') arasında bulunmaktadır.
+
+        String[] data = { "", "", "" }; //{ "", "" };
+
+        if(!spouse.isBlank())
+        {
+            String[] splitted = spouse.split(" ");
+
+            String name = "";
+            for (int i = 0; i < splitted.length - 1; i++)
+                name += i == splitted.length - 2 ? splitted[i] : splitted[i] + " ";
+
+            ////////////////////////////////////////////////////////////////////////////
+            /*if(!splitted[splitted.length - 1].equalsIgnoreCase(surnameOfHusband))
+            {
+                name += " " + splitted[splitted.length - 1];
+                data[0] = name;
+                data[1] = surnameOfHusband;
+            }
+            else
+            {
+                data[0] = name;
+                data[1] = splitted[splitted.length - 1];
+            }*/
+
+            data[0] = splitted[0];
+
+            if (splitted[splitted.length - 1].equalsIgnoreCase(surnameOfHusband))
+            {
+                name += " " + splitted[splitted.length - 1];
+                data[1] = name;
+                data[2] = surnameOfHusband;
+            }
+            else
+            {
+                data[1] = name;
+                data[2] = splitted[splitted.length - 1];
+            }
+            ////////////////////////////////////////////////////////////////////////////
+        }
+
+        return data;
+    }
+}
+package Main;
+
+import Parser.ExcelParser;
+import Person.*;
+import Tree.*;
+import GodotData.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import Tree.GodotFamily;
+import com.google.gson.*;
+
+import WebServer.*;
+
+public class Main
+{
+    static String filePath = "test.xlsx";
+    static Scanner input = new Scanner(System.in);
+
+    public static ArrayList<PersonData> peopleList;
+    public static GodotData godotData = new GodotData();
+    public static ArrayList<GodotFamily> godotFamilies = new ArrayList<>();
+    public static int tempGenerationCounter = 0;
+    public static Person tempPerson;
+    public static int problemIndex = 0;
+
+    public static void main(String[] args) throws IOException
+    {
+        int port = 8080;
+
+        WebServer server = new WebServer();
+        new Thread(() -> {
+            try {
+                server.Start(port);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+
+        peopleList = ExcelParser.parseAll(filePath);
+        ArrayList<ArrayList<PersonData>> membersOfFamilies = new ArrayList<>();
+        ArrayList<Family> families = new ArrayList<>();
+
+        for(int i = 0; i < ExcelParser.GetFamilyCount(filePath); i++)
+        {
+            families.add(new Family(i));
+            godotFamilies.add(new GodotFamily(i));
+            membersOfFamilies.add(new ArrayList<>());
+            membersOfFamilies.get(i).addAll(ExcelParser.parse(filePath, i));
+        }
+
+        for(int i = 0; i < families.size(); i++)
+        {
+            for(PersonData data : membersOfFamilies.get(i))
+                families.get(i).AddPerson(data, peopleList);
+
+            families.get(i).ValidateFamily(peopleList);
+            godotFamilies.get(i).AddPerson(families.get(i).rootNode);
+        }
+
+        System.out.println();
+
+        FamilyTreeMenu(families, peopleList);
+    }
+
+    public static String GetGodotTree()
+    {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return "" + gson.toJson(godotFamilies);
+    }
+
+    public static String GetGodotData()
+    {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        switch(problemIndex)
+        {
+            case 0 -> {
+                return "" + gson.toJson(godotData.peopleIDsWithNoChildren);
+            }
+            case 1 -> {
+                return "" + gson.toJson(godotData.peopleIDsWithSpecificBlood);
+            }
+            case 2 -> {
+                return "" + gson.toJson(godotData.continuedProfessions);
+            }
+            case 3 -> {
+                return "" + gson.toJson(godotData.familyTreeOfSpecificPerson);
+            }
+            case 4 -> {
+                return "" + gson.toJson(godotData.generationCounts);
+            }
+            case 5 -> {
+                return "" + gson.toJson(godotData.generationCountAfterPerson);
+            }
+        }
+
+        return "";
+    }
+
+    public static String GetGodotPersonData()
+    {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return "" + gson.toJson(peopleList);
+    }
+
+    public static void FamilyTreeMenu(ArrayList<Family> families, ArrayList<PersonData> personData)
+    {
+        while(true)
+        {
+            RenderMenu();
+            String selection = input.nextLine();
+            System.out.println();
+
+            switch (selection)
+            {
+                case "0" -> {
+                    System.out.println("Sistemden çıkış yapılıyor...");
+                    System.exit(0);
+                }
+                case "1" -> Menu_FindPeopleWithNoChildren(families, personData);
+                case "2" -> Menu_FindPeopleWithSpecificBloodType(families, personData);
+                case "3" -> Menu_FindContinuedProfessions(families, personData);
+                case "4" -> Menu_ShowFamilyTreeOfSpecificPerson(families, personData);
+                case "5" -> Menu_CalculateGenerationCount(families);
+                case "6" -> Menu_CalculateGenerationsAfterPerson(families);
+
+                default -> {
+                    System.out.println(".------------------------------------------.");
+                    System.out.println("| Seçiminiz hatalı, lütfen tekrar deneyin. |");
+                    System.out.println("'------------------------------------------'\n");
+                }
+            }
+
+            System.gc();
+        }
+    }
+
+    public static void RenderMenu()
+    {
+        System.out.println("YILDIZsoft Soy Ağacı Sistemi\n");
+        System.out.println("1) Çocuğu olmayanları bul.");   // Tamamlandı
+        //System.out.println("2) Üvey kardeşleri bul.");
+        System.out.println("2) Belirtilen kan grubuna sahip kişileri bul.");    // Tamamlandı
+        System.out.println("3) Ata mesleğini devam ettiren kişileri bul.");     // Tamamlandı
+        //System.out.println("5) Aynı isme sahip kişileri bul.");
+        //System.out.println("6) Belirtilen iki kişinin birbirine yakınlığını bul.");
+        System.out.println("4) Belirtilen kişinin soy ağacını göster.");    // Tamamlandı
+        System.out.println("5) Soy ağacının kaç nesilden oluştuğunu hesapla."); // Tamamlandı
+        System.out.println("6) Belirtilen kişiden sonra kaç nesil geldiğini hesapla.\n");   // Tamamlandı
+        System.out.println("0) Çıkış\n");
+        System.out.print("Seçiminiz: ");
+    }
+
+    public static void Menu_FindContinuedProfessions(ArrayList<Family> families, ArrayList<PersonData> personData)
+    {
+        System.out.println("\n-----  Ata Mesleğini Devam Ettiren Kişileri Bul  -----\n");
+        godotData.continuedProfessions.clear();
+        problemIndex = 2;
+
+        for(Family family : families)
+            FindContinuedProfessionsRecursive(family.rootNode);
+
+        System.out.println("Ata mesleğini devam ettiren kişiler:");
+        for(Integer[] data : godotData.continuedProfessions)
+        {
+            switch(data[1])
+            {
+                case 1 -> System.out.println(GetPersonDataFromID(data[0], personData).id + ": " + GetPersonDataFromID(data[0], personData).name + " " + GetPersonDataFromID(data[0], personData).surname + " babasının mesleğini devam ettiriyor.");
+                case 2 -> System.out.println(GetPersonDataFromID(data[0], personData).id + ": " + GetPersonDataFromID(data[0], personData).name + " " + GetPersonDataFromID(data[0], personData).surname + " dedesinin mesleğini devam ettiriyor.");
+                case 3 -> System.out.println(GetPersonDataFromID(data[0], personData).id + ": " + GetPersonDataFromID(data[0], personData).name + " " + GetPersonDataFromID(data[0], personData).surname + " hem babasının hem de dedesinin mesleğini devam ettiriyor.");
+            }
+        }
+
+        System.out.println("\n" + GetGodotData());
+
+        System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
+        input.nextLine();
+    }
+
+    public static void FindContinuedProfessionsRecursive(Person root)
+    {
+        if(root.father != null)
+        {
+            if (root.father.father != null)
+            {
+                if (root.data.profession.equalsIgnoreCase(root.father.data.profession) &&
+                        root.data.profession.equalsIgnoreCase(root.father.father.data.profession))
+                    godotData.continuedProfessions.add(new Integer[]{root.data.id, 3});
+
+                else if(root.data.profession.equalsIgnoreCase(root.father.father.data.profession))
+                    godotData.continuedProfessions.add(new Integer[]{root.data.id, 2});
+
+                else if (root.data.profession.equalsIgnoreCase(root.father.data.profession))
+                    godotData.continuedProfessions.add(new Integer[]{root.data.id, 1});
+            }
+            else
+                if (root.data.profession.equalsIgnoreCase(root.father.data.profession))
+                    godotData.continuedProfessions.add(new Integer[]{root.data.id, 1});
+        }
+
+        for(Person child : root.children)
+            FindContinuedProfessionsRecursive(child);
+    }
+
+    public static void Menu_ShowFamilyTreeOfSpecificPerson(ArrayList<Family> families, ArrayList<PersonData> personData)
+    {
+        System.out.println("\n-----  Belirtilen Kişinin Soy Ağacını Göster  -----\n");
+
+        problemIndex = 3;
+
+        System.out.print("Kişinin ID'sini giriniz: ");
+        int wantedID = input.nextInt();
+
+        Family wantedFamily = new Family(0);
+
+        Person aPerson = GetPersonFromID(wantedID, families);
+        Person wantedPerson = new Person(GetPersonDataFromID(wantedID, personData), aPerson.mother, aPerson.father, aPerson.spouse, aPerson.children);
+
+        AddPersonToFamilyRecursive(wantedPerson, wantedFamily, personData);
+        wantedFamily.ValidateFamily(personData);
+        SetRelationOfPersonRecursive(wantedFamily.rootNode, "", false, false, true, personData);
+
+        godotData.familyTreeOfSpecificPerson.AddPerson(wantedFamily.rootNode);
+
+        System.out.println("\n" + wantedPerson.data.name + " " + wantedPerson.data.surname + " kişisinin soy ağacı oluşturuldu.");
+
+        PrintTreeRecursive(wantedFamily.rootNode, 0, 0, wantedFamily.rootNode.children.size() - 1, false);
+
+        System.out.println("\n" + GetGodotData());
+
+        System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
+        input.nextLine();
+        input.nextLine();
+    }
+
+    public static void AddPersonToFamilyRecursive(Person root, Family familyToAdded, ArrayList<PersonData> personData)
+    {
+        if(root == null)
+            return;
+
+        familyToAdded.AddPerson(root.data, personData);
+
+        if(root.spouse != null)
+            familyToAdded.AddPerson(root.spouse.data, personData);
+
+        for(Person child : root.children)
+            AddPersonToFamilyRecursive(child, familyToAdded, personData);
+    }
+
+    public static void SetRelationOfPersonRecursive(Person somePerson, String relation, boolean isNotStart, boolean upward, boolean checkSpouse, ArrayList<PersonData> personData)
+    {
+        for(PersonData deyta : personData)
+            if(deyta.id == somePerson.data.id)
+            {
+                somePerson.data.surname = deyta.surname;
+                break;
+            }
+
+        if(isNotStart)
+            somePerson.data.surname += " (";
+        else
+            somePerson.data.surname += " ";
+
+        somePerson.data.surname += relation;
+
+        String temp = relation;
+
+        if(!upward)
+        {
+            if (somePerson.spouse != null && checkSpouse)
+            {
+                if (relation.endsWith("ı") || relation.endsWith("a"))
+                    relation += "nın ";
+                else if (relation.endsWith("i") || relation.endsWith("e"))
+                    relation += "nin ";
+                else if (relation.endsWith("u") || relation.endsWith("o"))
+                    relation += "nun ";
+                else if (relation.endsWith("ü") || relation.endsWith("ö"))
+                    relation += "nün ";
+
+                SetRelationOfPersonRecursive(somePerson.spouse, relation + (somePerson.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, false, false, personData);
+            }
+
+            relation = temp;
+
+            if (!somePerson.children.isEmpty() && checkSpouse)
+            {
+                if (relation.endsWith("ı") || relation.endsWith("a"))
+                    relation += "nın ";
+                else if (relation.endsWith("i") || relation.endsWith("e"))
+                    relation += "nin ";
+                else if (relation.endsWith("u") || relation.endsWith("o"))
+                    relation += "nun ";
+                else if (relation.endsWith("ü") || relation.endsWith("ö"))
+                    relation += "nün ";
+
+                for (Person child : somePerson.children)
+                    SetRelationOfPersonRecursive(child, relation + (child.data.gender ? "oğlu" : "kızı"), true, false, true, personData);
+            }
+        }
+        else
+        {
+            if (somePerson.spouse != null && checkSpouse)
+            {
+                if (relation.endsWith("ı") || relation.endsWith("a"))
+                    relation += "nın ";
+                else if (relation.endsWith("i") || relation.endsWith("e"))
+                    relation += "nin ";
+                else if (relation.endsWith("u") || relation.endsWith("o"))
+                    relation += "nun ";
+                else if (relation.endsWith("ü") || relation.endsWith("ö"))
+                    relation += "nün ";
+
+                SetRelationOfPersonRecursive(somePerson.spouse, relation + (somePerson.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, true, false, personData);
+            }
+
+            relation = temp;
+
+            if (somePerson.mother != null)
+            {
+                if (relation.endsWith("ı") || relation.endsWith("a"))
+                    relation += "nın ";
+                else if (relation.endsWith("i") || relation.endsWith("e"))
+                    relation += "nin ";
+                else if (relation.endsWith("u") || relation.endsWith("o"))
+                    relation += "nun ";
+                else if (relation.endsWith("ü") || relation.endsWith("ö"))
+                    relation += "nün ";
+
+                SetRelationOfPersonRecursive(somePerson.mother, relation + "annesi", true, true, true, personData);
+            }
+
+            relation = temp;
+
+            if (somePerson.father != null && checkSpouse)
+            {
+                if (relation.endsWith("ı") || relation.endsWith("a"))
+                    relation += "nın ";
+                else if (relation.endsWith("i") || relation.endsWith("e"))
+                    relation += "nin ";
+                else if (relation.endsWith("u") || relation.endsWith("o"))
+                    relation += "nun ";
+                else if (relation.endsWith("ü") || relation.endsWith("ö"))
+                    relation += "nün ";
+
+                SetRelationOfPersonRecursive(somePerson.father, relation + "babası", true, true, false, personData);
+            }
+        }
+
+        if(isNotStart)
+            somePerson.data.surname += ")";
+
+        somePerson.data.surname = somePerson.data.surname.trim();
+    }
+
+    public static void Menu_CalculateGenerationsAfterPerson(ArrayList<Family> families)
+    {
+        System.out.println("\n-----  Belirtilen Kişiden Sonra Kaç Nesil Geldiğini Hesapla  -----\n");
+
+        problemIndex = 5;
+
+        System.out.print("Kişinin ID'sini giriniz: ");
+        int wantedID = input.nextInt();
+        Person wantedPerson = GetPersonFromID(wantedID, families);
+
+        tempGenerationCounter = 0;
+        CalculateGenerationCountRecursive(wantedPerson, 0);
+
+        godotData.generationCountAfterPerson[0] = wantedID;
+        godotData.generationCountAfterPerson[1] = tempGenerationCounter;
+
+        System.out.println(wantedPerson.data.name + " " + wantedPerson.data.surname + " kişisinden sonra " + (tempGenerationCounter == 0 ? "nesil gelmemektedir." : tempGenerationCounter + " nesil gelmektedir."));
+
+        System.out.println("\n" + GetGodotData());
+
+        System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
+        input.nextLine();
+        input.nextLine();
+    }
+
+    public static Person GetPersonFromID(int ID, ArrayList<Family> families)
+    {
+        tempPerson = null;
+
+        for(Family family : families)
+            FindPersonRecursive(family.rootNode, ID);
+
+        return tempPerson;
+    }
+
+    public static void FindPersonRecursive(Person root, int ID)
+    {
+        if(root.data.id == ID)
+            tempPerson = root;
+
+        else
+        {
+            if(root.spouse != null)
+                if(root.spouse.data.id == ID)
+                {
+                    tempPerson = root.spouse;
+                    return;
+                }
+
+            for (Person child : root.children)
+                FindPersonRecursive(child, ID);
+        }
+    }
+
+    public static void Menu_RenderBloodTypeMenu()
+    {
+        System.out.println("Aramak istediğiniz kan grubunu seçin.\n");
+        System.out.println("1) 0(-)");
+        System.out.println("2) 0(+)");
+        System.out.println("3) A(-)");
+        System.out.println("4) A(+)");
+        System.out.println("5) B(-)");
+        System.out.println("6) B(+)");
+        System.out.println("7) AB(-)");
+        System.out.println("8) AB(+)\n");
+        System.out.println("0) İptal\n");
+        System.out.print("Seçiminiz: ");
+    }
+
+    public static void Menu_FindPeopleWithSpecificBloodType(ArrayList<Family> families, ArrayList<PersonData> personData)
+    {
+        System.out.println("\n-----  Belirtilen Kan Grubuna Sahip Kişileri Bul  -----\n");
+
+        problemIndex = 1;
+
+        String selection, wantedBloodType = "";
+        boolean illegal;
+
+        do
+        {
+            Menu_RenderBloodTypeMenu();
+            selection = input.nextLine();
+
+            illegal = !(selection.equals("1") || selection.equals("2") || selection.equals("3") || selection.equals("4") || selection.equals("5") || selection.equals("6") || selection.equals("7") || selection.equals("8") || selection.equals("0"));
+
+            if(illegal)
+            {
+                System.out.println(".------------------------------------------.");
+                System.out.println("| Seçiminiz hatalı, lütfen tekrar deneyin. |");
+                System.out.println("'------------------------------------------'\n");
+            }
+        } while (illegal);
+
+        switch(selection)
+        {
+            case "0" -> {
+                System.out.println("\nİşlem iptal edildi, ana menüye dönülüyor...\n----------------------------------------------------------------------------\n");
+                return;
+            }
+            case "1" -> wantedBloodType = "0(-)";
+            case "2" -> wantedBloodType = "0(+)";
+            case "3" -> wantedBloodType = "A(-)";
+            case "4" -> wantedBloodType = "A(+)";
+            case "5" -> wantedBloodType = "B(-)";
+            case "6" -> wantedBloodType = "B(+)";
+            case "7" -> wantedBloodType = "AB(-)";
+            case "8" -> wantedBloodType = "AB(+)";
+        }
+
+        godotData.peopleIDsWithSpecificBlood.clear();
+
+        for(Family family : families)
+            FindPeopleWithSpecificBloodTypeRecursive(family.rootNode, wantedBloodType);
+
+        System.out.println();
+
+        if(godotData.peopleIDsWithSpecificBlood.isEmpty())
+            System.out.println("Kan grubu " + wantedBloodType + " olan herhangi bir kişi yoktur.");
+        else
+        {
+            System.out.println("Kan grubu " + wantedBloodType + " olan kişiler:");
+            for(Integer personID : godotData.peopleIDsWithSpecificBlood)
+                System.out.println(personID + ": " + GetPersonDataFromID(personID, personData).name + " " + GetPersonDataFromID(personID, personData).surname);
+        }
+
+        System.out.println("\n" + GetGodotData());
+
+        System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
+        input.nextLine();
+    }
+
+    public static void FindPeopleWithSpecificBloodTypeRecursive(Person root, String wantedBloodType)
+    {
+        if(root.data.bloodType.equalsIgnoreCase(wantedBloodType) && !godotData.peopleIDsWithSpecificBlood.contains(root.data.id))
+            godotData.peopleIDsWithSpecificBlood.add(root.data.id);
+
+        for(Person person : root.children)
+            FindPeopleWithSpecificBloodTypeRecursive(person, wantedBloodType);
+    }
+
+    public static void Menu_CalculateGenerationCount(ArrayList<Family> families)
+    {
+        System.out.println("\n-----  Soy Ağacının Kaç Nesilden Oluştuğunu Hesapla  -----\n");
+
+        problemIndex = 4;
+
+        godotData.generationCounts.clear();
+
+        for(Family family : families)
+        {
+            tempGenerationCounter = 0;
+            CalculateGenerationCountRecursive(family.rootNode, 1);
+            godotData.generationCounts.add(tempGenerationCounter);
+        }
+
+        for(int i = 0; i < godotData.generationCounts.size(); i++)
+            System.out.println((i + 1) + ". soy ağacı " + godotData.generationCounts.get(i) + " nesilden oluşmaktadır.");
+
+        System.out.println("\n" + GetGodotData());
+
+        System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
+        input.nextLine();
+    }
+
+    public static void CalculateGenerationCountRecursive(Person root, int currentGen)
+    {
+        if(currentGen > tempGenerationCounter)
+            tempGenerationCounter = currentGen;
+
+        for(Person person : root.children)
+            CalculateGenerationCountRecursive(person, currentGen + 1);
+    }
+
+    public static void Menu_FindPeopleWithNoChildren(ArrayList<Family> families, ArrayList<PersonData> personData)
+    {
+        System.out.println("\n-----  Çocuğu Olmayanları Bul  -----\n");
+
+        problemIndex = 0;
+
+        godotData.peopleIDsWithNoChildren.clear();
+
+        System.out.println("Mevcut liste temizlendi, yeni liste oluşturuluyor...");
+
+        for(Family family : families)
+            FindPeopleWithNoChildrenRecursive(family.rootNode);
+
+        System.out.println("Liste oluşturuldu.\n");
+
+        if(godotData.peopleIDsWithNoChildren.isEmpty())
+            System.out.println("Çocuğu olmayan herhangi bir kişi yoktur.");
+        else
+        {
+            System.out.print("Sıralanmamış liste: [");
+            for (int j = 0; j < godotData.peopleIDsWithNoChildren.size(); j++)
+                System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j), personData).name + " " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j), personData).surname
+                        + (j == godotData.peopleIDsWithNoChildren.size() - 1 ? "]\n\n" : ", "));
+
+            System.out.println("Sıralama başlıyor... (Sıralama için kullanılan algoritma: Selection sort)");
+
+            for (int i = 0; i < godotData.peopleIDsWithNoChildren.size() - 1; i++)
+            {
+                int index = i;
+
+                for (int j = i + 1; j < godotData.peopleIDsWithNoChildren.size(); j++)
+                {
+                    // Birinci kişinin doğum yılı bilgisi alınıyor.
+                    PersonData thePerson = GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(index), personData);
+                    String[] theData = thePerson.birthdate.split("[-/.]");
+                    int theYear = Integer.parseInt(theData[theData.length - 1]);
+
+                    // İkinci kişinin doğum yılı bilgisi alınıyor.
+                    PersonData theOtherPerson = GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j), personData);
+                    String[] theOtherData = theOtherPerson.birthdate.split("[-/.]");
+                    int theOtherYear = Integer.parseInt(theOtherData[theOtherData.length - 1]);
+
+                    if (theYear > theOtherYear)
+                        index = j;
+                }
+
+                Integer temp = godotData.peopleIDsWithNoChildren.get(i);
+                godotData.peopleIDsWithNoChildren.set(i, godotData.peopleIDsWithNoChildren.get(index));
+                godotData.peopleIDsWithNoChildren.set(index, temp);
+
+                System.out.print((i + 1) + ". adım sonunda liste: [");
+                for (int j = 0; j < godotData.peopleIDsWithNoChildren.size(); j++)
+                    System.out.print(godotData.peopleIDsWithNoChildren.get(j) + ": " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j), personData).name + " " + GetPersonDataFromID(godotData.peopleIDsWithNoChildren.get(j), personData).surname
+                            + (j == godotData.peopleIDsWithNoChildren.size() - 1 ? "]\n" : ", "));
+            }
+            System.out.println("Sıralama tamamlandı.");
+
+            System.out.print("\nÇocuğu olmayan kişiler (Yaş sıralaması: büyükten küçüğe)\n");
+            for (Integer personID : godotData.peopleIDsWithNoChildren)
+                System.out.println(personID + ": " + GetPersonDataFromID(personID, personData).name + " " + GetPersonDataFromID(personID, personData).surname);
+        }
+
+        System.out.println("\n" + GetGodotData());
+
+        System.out.println("\nDevam etmek için ENTER'a basın...\n----------------------------------------------------------------------------\n");
+        input.nextLine();
+    }
+
+    public static void FindPeopleWithNoChildrenRecursive(Person root)
+    {
+        if(root.children.isEmpty() && !godotData.peopleIDsWithNoChildren.contains(root.data.id))
+            godotData.peopleIDsWithNoChildren.add(root.data.id);
+
+        else
+            for(Person person : root.children)
+                FindPeopleWithNoChildrenRecursive(person);
+    }
+
+    public static PersonData GetPersonDataFromID(int ID, ArrayList<PersonData> personData)
+    {
+        for(PersonData data : personData)
+            if(data.id == ID)
+                return data;
+
+        return null;
+    }
+
+/*    public static void PrintFamilyTreeToConsole(ArrayList<Family> families)
+    {
+        System.out.println("\n----------------------------------------------------------------------------------------\n");
+
+        for(Family family : families)
+        {
+            PrintTreeRecursive(family.rootNode, 0, 0, family.rootNode.children.size() - 1, false);
+            System.out.println("\n----------------------------------------------------------------------------------------\n");
+        }
+    }*/
+
+    public static void PrintTreeRecursive(Person root, int generation, int childIndex, int childCount, boolean isFinalChild)
+    {
+        for(int i = 0; i < generation; i++)
+        {
+            if(childIndex >= childCount && i == generation - 1)
+                System.out.print(" '-- ");
+
+            else if(i == generation - 1 && childIndex < childCount)
+                System.out.print(" |-- ");
+
+            else if(i < generation - 1 && !isFinalChild)
+                System.out.print(" |   ");
+
+            else
+                System.out.print("     ");
+        }
+
+        isFinalChild = childIndex >= childCount;
+
+        System.out.print(root.data.id + ": " + root.data.name + " " + root.data.surname);
+        if(root.spouse != null)
+            System.out.print((root.data.maritalStatus.equalsIgnoreCase("evli") ? " === " : " =X= ") + root.spouse.data.id + ": " + root.spouse.data.name + " " + root.spouse.data.surname);
+
+        System.out.println();
+
+        for(int i = 0; i < root.children.size(); i++)
+            PrintTreeRecursive(root.children.get(i), generation + 1, i, root.children.size() - 1, isFinalChild);
+    }
+}package WebServer;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.util.HashMap;
+
+import static WebServer.RootHandler.parseQuery;
+public class GetHandler implements HttpHandler
+{
+    @Override
+    public void handle(HttpExchange he) throws IOException
+    {
+        // parse request
+        URI requestedUri = he.getRequestURI();
+        String query = requestedUri.getRawQuery();
+        HashMap<String, String> queryData = parseQuery(query);
+
+        // send response
+        String response = "";
+        for (String key : queryData.keySet())
+            response += key + " = " + queryData.get(key) + "\n";
+
+        he.sendResponseHeaders(200, response.length());
+        OutputStream os = he.getResponseBody();
+        os.write(response.getBytes());
+
+        os.close();
+
+        System.out.println("query: " + query);
+    }
+}package WebServer;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import static WebServer.RootHandler.parseQuery;
+
+public class PostHandler implements HttpHandler
+{
+    @Override
+    public void handle(HttpExchange he) throws IOException
+    {
+        // parse request
+        InputStreamReader isr = new InputStreamReader(he.getRequestBody(), StandardCharsets.UTF_8);
+        BufferedReader br = new BufferedReader(isr);
+        String payload = br.readLine();
+        //HashMap<String, String> queryData = parseQuery(query);
+
+        System.out.println("payload: " + payload);
+
+        JSONObject jo;
+        try {
+            jo = (JSONObject) new JSONParser().parse(payload);
+
+
+        } catch (ParseException e) {
+            System.out.println("Parse failed");
+            throw new RuntimeException(e);
+        };
+        // send response
+        String response;
+        response = jo.toString();
+        response = "";
+        for (Object key : jo.keySet()) {
+            response += key + ":" + jo.get(key) + ",";
+        }
+        response += "\n";
+        System.out.println("response:" + response);
+        he.sendResponseHeaders(200, response.length());
+
+        OutputStream os = he.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
+    }
+}
+package WebServer;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+
+public class RootHandler implements HttpHandler
+{
+    public static HashMap<String, String> parseQuery(String query)
+    {
+        String[] queryPairs = query.split("&");
+        HashMap<String, String> queryData = new HashMap<>();
+
+        for (String pair : queryPairs)
+            queryData.put(pair.split("=")[0], pair.split("=")[1]);
+
+        return queryData;
+    }
+
+    @Override
+    public void handle(HttpExchange he) throws IOException
+    {
+        String response = "<h1>Server start success " +
+        "if you see this message </h1 > " + " Merhaba Nusret ";
+
+        he.sendResponseHeaders(200, response.length());
+
+        OutputStream os = he.getResponseBody();
+        os.write(response.getBytes());
+        os.close();
+    }
+}package WebServer;
+
+import Main.Main;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
+
+import static WebServer.RootHandler.parseQuery;
+
+public class InitializeGame implements HttpHandler
+{
+    @Override
+    public void handle(HttpExchange he) throws IOException
+    {
+        // parse request
+        InputStreamReader isr = new InputStreamReader(he.getRequestBody(), StandardCharsets.UTF_8);
+        BufferedReader br = new BufferedReader(isr);
+        String payload = br.readLine();
+        //HashMap<String, String> queryData = parseQuery(query);
+
+        System.out.println("payload: " + payload);
+
+        JSONObject jo;
+        try {
+            jo = (JSONObject) new JSONParser().parse(payload);
+
+
+        } catch (ParseException e) {
+            System.out.println("Parse failed");
+            throw new RuntimeException(e);
+        };
+
+        System.out.println(jo.toString());
+        System.out.println(jo.keySet());
+        System.out.println(jo.get("deck"));
+
+        String[] deckString = jo.get("deck").toString().replace("[", "").replace("]", "").split(",");
+        System.out.println("DeckString: " + Arrays.toString(deckString));
+        int[] deck = new int[5];
+        for (int i=0;i<deckString.length;i++) {
+
+            deck[i] = Integer.parseInt(deckString[i]);
+            System.out.println("Converted " + i);
+        }
+        System.out.println("deck:" + Arrays.toString(deck));
+        String response = "";
+        response += Arrays.toString(deck);
+        // send response
+        /*
+        String response = "Starting ";
+        System.out.println(Boolean.parseBoolean(queryData.get("human")));
+        if () {
+            response += "Human";
+        }
+        else {
+            response += "AI";
+        }
+
+        response += "-AI Game.\n";
+         */
+
+        he.sendResponseHeaders(200, response.length());
+        OutputStream os = he.getResponseBody();
+        os.write(response.getBytes());
+
+        os.close();
+
+
+        int[] someDeck = { 0, 1, 2, 0, 1 };
+
+        //System.out.println("query: " + query);
+        //Game.InitializeGame(deck);
+        //Game.InitializeLogFile();
+
+        //Game.InitializeGame(Boolean.parseBoolean(queryData.get("human")));
+
+    }
+}package WebServer;
+
+import com.sun.net.httpserver.HttpServer;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
+public class WebServer
+{
+    public void Start(int port) throws IOException
+    {
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+        System.out.println("\n[Server started at " + port + "]");
+
+        server.createContext("/", new RootHandler());
+        server.createContext("/get", new GetHandler());
+        server.createContext("/initializegame", new InitializeGame());
+        server.createContext("/gettree", new GetTree());
+        server.createContext("/getpeoplelist", new GetPeopleList());
+        server.createContext("/getproblemdata", new GetProblemData());
+        /*
+        server.createContext("/echoHeader", new EchoHeaderHandler());
+        server.createContext("/echoPost", new EchoPostHandler());
+         */
+
+        server.setExecutor(null);
+        server.start();
+    }
+}
+
+package WebServer;
+
+import Person.*;
+import Tree.*;
+import Main.*;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.util.Base64;
+import java.util.HashMap;
+
+import static WebServer.RootHandler.parseQuery;
+
+public class GetTree implements HttpHandler
+{
+    @Override
+    public void handle(HttpExchange he) throws IOException
+    {
+
+
+        // parse request
+        URI requestedUri = he.getRequestURI();
+        //String query = requestedUri.getRawQuery();
+        //HashMap<String, String> queryData = parseQuery(query);
+
+        // send response
+        String response = "mrb";
+
+        response = Base64.getEncoder().encodeToString(Main.GetGodotTree().getBytes());
+        //response = Game.GetGameInfo();
+
+        System.out.println("response length " + response.length());
+
+        he.sendResponseHeaders(200, response.length());//response.length());
+        OutputStream os = he.getResponseBody();
+        os.write(response.getBytes());
+
+        os.close();
+
+        //System.out.println("query: " + query);
+    }
+}package WebServer;
+
+import Main.Main;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.util.Base64;
+
+public class GetPeopleList implements HttpHandler
+{
+    @Override
+    public void handle(HttpExchange he) throws IOException
+    {
+
+
+        // parse request
+        URI requestedUri = he.getRequestURI();
+        //String query = requestedUri.getRawQuery();
+        //HashMap<String, String> queryData = parseQuery(query);
+
+        // send response
+        String response = "mrb";
+
+        response = Base64.getEncoder().encodeToString(Main.GetGodotPersonData().getBytes());
+        //response = Game.GetGameInfo();
+
+        System.out.println("response length " + response.length());
+
+
+
+        he.sendResponseHeaders(200, response.length());//response.length());
+        OutputStream os = he.getResponseBody();
+        os.write(response.getBytes());
+
+        os.close();
+
+        //System.out.println("query: " + query);
+    }
+}package WebServer;
+
+import Main.Main;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.util.Base64;
+
+public class GetProblemData implements HttpHandler
+{
+    @Override
+    public void handle(HttpExchange he) throws IOException
+    {
+
+
+        // parse request
+        URI requestedUri = he.getRequestURI();
+        //String query = requestedUri.getRawQuery();
+        //HashMap<String, String> queryData = parseQuery(query);
+
+        // send response
+        String response = "mrb";
+
+        response = Base64.getEncoder().encodeToString(Main.GetGodotData().getBytes());
+        //response = Game.GetGameInfo();
+
+        System.out.println("response length " + response.length());
+
+
+
+        he.sendResponseHeaders(200, response.length());//response.length());
+        OutputStream os = he.getResponseBody();
+        os.write(response.getBytes());
+
+        os.close();
+
+        //System.out.println("query: " + query);
+    }
+}package GodotData;
+
+import Tree.GodotFamily;
+import com.google.gson.annotations.Expose;
+import java.util.ArrayList;
+
+public class GodotData
+{
+    @Expose
+    public ArrayList<Integer> peopleIDsWithNoChildren = new ArrayList<>();
+    @Expose
+    public ArrayList<Integer> peopleIDsWithSpecificBlood = new ArrayList<>();
+    @Expose
+    public ArrayList<Integer> generationCounts = new ArrayList<>();
+    @Expose
+    public int[] generationCountAfterPerson = new int[2];   // İlk eleman kişi ID'si, ikinci eleman kişiden sonra gelen nesil sayısı
+    @Expose
+    public GodotFamily familyTreeOfSpecificPerson = new GodotFamily(0);
+    @Expose
+    public ArrayList<Integer[]> continuedProfessions = new ArrayList<>();   // İlk eleman devam ettiren kişinin ID'si, ikinci eleman ise 1: baba | 2: dede | 3: hem baba hem dede
+}
+extends Node2D
+
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
+
+func get_request(url, parameters=""):
+	var new_request = HTTPRequest.new()
+	add_child(new_request)
+	new_request.connect("request_completed", self, "_http_request_completed")
+	var error = new_request.request(url + str(parameters))
+	if error != OK:
+		push_error("An error occured")
+	return new_request
+
+func dict_to_get_parameters(dict):
+	var result = ""
+	for key in dict.keys():
+		result += key + "=" + str(dict[key])
+		if key != dict.keys()[-1]:
+			result += "&"
+	return result
+
+func post_request(url="", query=""):
+	var new_request = HTTPRequest.new()
+	add_child(new_request)
+	new_request.connect("request_completed", self, "_http_request_completed")
+	new_request.request(url, ["Content-Type: application/json"], false, HTTPClient.METHOD_POST, str(query))
+	return new_request
+# Called when the node enters the scene tree for the first time.
+
+func _http_request_completed(result, response_code, headers, body):
+	Globalvars.setResponse(body.get_string_from_utf8())
+extends Camera2D
+
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
+var mouse_start_pos
+var screen_start_position
+
+var dragging = false
+
+# Called when the node enters the scene tree for the first time.
+func _input(event):
+	if event.is_action("zoom_in"):
+		zoom /= 1.1
+		zoom = Vector2(clamp(zoom.x, 0.1, 10), clamp(zoom.y, 0.1, 10))
+		#position = event.position * zoom
+	if event.is_action("zoom_out"):
+		zoom *= 1.1
+		zoom = Vector2(clamp(zoom.x, 0.1, 10), clamp(zoom.y, 0.1, 10))
+		#position = event.position * zoom + screen_start_position
+	if event.is_action("drag"):
+		if event.is_pressed():
+			mouse_start_pos = event.position
+			screen_start_position = position
+			dragging = true
+		else:
+			dragging = false
+	elif event is InputEventMouseMotion and dragging:
+		position = zoom * (mouse_start_pos - event.position) + screen_start_position
+	
+extends Node
+
+var response = ""
+
+var ip = "localhost"
+
+func setResponse(string):
+	response = string
+	print("setResponse ")# + string)
+
+func UpdateGameStatus():
+	print("Updating game status")
+	print("response is:" + str(response))
+	var parse_result: JSONParseResult = JSON.parse(response)
+	print("parse ok")
+	print(parse_result.error == OK)
+
+onready var TreeView = get_node("/root/TreeView")
+extends Node2D
+
+
+#[id, name, surname, birthdate, spouse, motherName, fatherName, bloodType, profession, maritalStatus, maidenName, gender]
+export (Dictionary) var person
+export (Dictionary) var data = {"id":"id", "name":"name", "surname":"surname", "birthdate":"birthdate", "spouse":"spouse", "motherName":"motherName", "fatherName":"fatherName", "bloodType":"bloodType", "profession":"profession", "maritalStatus":"maritalStatus", "maidenName":"maidenName", "gender":"gender"}
+export (bool) var root = false
+
+func start_glow():
+	$AnimationPlayer.play("glow" +  str(int(person["data"]["gender"])))
+func stop_glow():
+	$AnimationPlayer.play("normal" + str(int(person["data"]["gender"])))
+
+func set_person(newperson):
+	person = newperson
+	update_labels()
+
+func add_node(person: Dictionary, newpos: Vector2):
+	var node_scene = load("res://Node.tscn")
+	var newnode = node_scene.instance()
+	newnode.set_person(person)
+	newnode.position = newpos
+	add_child(newnode)
+	return newnode
+	#call_deferred("add_child", newnode)
+	
+func set_parent_line(to: Vector2):
+	$Line2D.points[1] = to
+	pass
+func set_spouse_line(to: Vector2):
+	$Line2D.points[1] = to
+	$Line2D.default_color = Color("ff6666")
+	#print(person["data"].keys())
+	#print(person["data"]["maritalStatus"])
+	if ["Bekar", "Dul"].has(person["data"]["maritalStatus"]):
+		$Line2D.width = 2
+		$Line2D.default_color == Color("8205b4")
+	pass
+
+func generate_subnodes(startpos):
+	var totalwidth = person["children"].size() * 240 + (person["children"].size()-1) * 80
+	var offset = Vector2(-totalwidth/2, 0)
+	#print(person["spouse"])
+	for child in person["children"]:
+		var childnode = add_node(child, offset + Vector2(0, 150))
+		childnode.set_parent_line(-childnode.position + Vector2(120, 0))
+		offset += childnode.generate_subnodes(offset) + Vector2(320, 0)
+	if person.has("spouse"):
+		var spousenode = add_node(person["spouse"], Vector2(260, 0))
+		spousenode.set_spouse_line(Vector2(-320, 0))
+		offset += Vector2(80, 0)
+	if root:
+		if person.has("mother"):
+			print("person is root and has mother")
+			if person["mother"] != 0:
+				print({"data": Globalvars.TreeView.get_person_from_id(person["mother"])})
+				var mothernode = add_node({"data": Globalvars.TreeView.get_person_from_id(person["mother"])}, Vector2(320, -150))
+				mothernode.set_parent_line(-Vector2(320, -150))
+				print("Added mother")
+				pass
+		if person.has("father"):
+			print("person is root and has father")
+			if person["father"] != 0:
+				var fathernode = add_node({"data": Globalvars.TreeView.get_person_from_id(person["father"])}, Vector2(0, -150))
+				fathernode.set_parent_line(-Vector2(0, -150))
+				print("Added father")
+				pass
+	return offset
+
+func update_labels():
+	$Panel/id.text = str(person["data"]["id"])
+	$Panel/fullname.text = person["data"]["name"] + " " + person["data"]["surname"]
+	$Panel/birthdate.text = person["data"]["birthdate"]
+	$Panel/bloodtype.text = person["data"]["bloodType"]
+	$Panel/profession.text = person["data"]["profession"]
+	$Panel/maidenname.text = person["data"]["maidenName"]
+	
+	#print(person["data"]["gender"])
+	#mavi 00b1ff
+	if person["data"]["gender"]:
+		$Panel.self_modulate = Color("00b1ff")
+#		$AnimationPlayer.get_animation("glow").track_set_key_value(0, 0, Color("00b1ff"))
+#		$AnimationPlayer.get_animation("glow").track_set_key_value(0, 3, Color("00b1ff"))
+#		$AnimationPlayer.get_animation("normal").track_set_key_value(0, 0, Color("00b1ff"))
+	else:
+		$Panel.self_modulate = Color("f700ff")
+		$Panel/TextureRect.self_modulate = Color("ff00f5")
+#		$AnimationPlayer.get_animation("glow").track_set_key_value(0, 0, Color("f700ff"))
+#		$AnimationPlayer.get_animation("glow").track_set_key_value(0, 3, Color("f700ff"))
+#		$AnimationPlayer.get_animation("normal").track_set_key_value(0, 0, Color("f700ff"))
+		
+	
+extends Control
+
+onready var requests = $Requests
+
+onready var node_scene = preload("res://Node.tscn")
+var foundperson
+
+func highlight_problem(data):
+	
+	
+	for node in get_tree().get_nodes_in_group("personnode"):
+		node.stop_glow()
+	
+	
+	for node in get_tree().get_nodes_in_group("personnode"):
+		if typeof(data[0]) == TYPE_INT:
+			if data.has(node.person["data"]["id"]):
+				node.start_glow()
+		if typeof(data[0]) == TYPE_ARRAY:
+			for arr in data:
+				if arr[0] == node.person["data"]["id"]:
+					node.start_glow()
+	pass
+
+
+func return_person_from_id(id):
+	
+	#print("making request")
+	var get_req = requests.get_request("http://" + Globalvars.ip + ":8080/getpeoplelist")
+	yield(get_req, "request_completed")
+	var response_decoded = Marshalls.base64_to_utf8(Globalvars.response)
+	print("response decoded")
+	#print(response_decoded)
+	#print("response: " + str(response_decoded) + " endresponse")
+	var parse_result: JSONParseResult = JSON.parse(response_decoded)
+	var result = parse_result.result
+	for person in result:
+		if person["id"] == id:
+			print("found person")
+			foundperson = person
+			break
+	
+	
+
+func generate_tree(person: Dictionary, startpos: Vector2):
+	#startpos = startpos
+	var totalwidth = person["children"].size() * 240 + (person["children"].size()-1) * 80
+	var offset = Vector2(totalwidth, 100)
+	#print(person["children"])
+	var rootnode = add_node(person, startpos)
+	rootnode.set_parent_line(Vector2(0, 0))
+	#rootnode.root = true
+	offset += rootnode.generate_subnodes(startpos + offset)
+	offset += Vector2(320, 0)
+	for child in person["children"]:
+		#print(child.keys())
+		#var childnode = rootnode.add_node(child, startpos + offset)
+		#offset += childnode.generate_subnodes(startpos + offset)
+		#offset += Vector2(320, 0)
+		pass
+
+
+func add_node(person: Dictionary, position: Vector2):
+	var newnode = node_scene.instance()
+	newnode.set_person(person)
+	newnode.global_position = position
+	$Tree.call_deferred("add_child", newnode)
+	return newnode
+	#add_child(newnode)
+
+func wait_for_request(req):
+	yield(req, "request_completed")
+
+
+func _ready():
+	var resp = return_person_from_id(1)
+	yield(resp, "completed")
+	
+	
+	
+	var get_req = requests.get_request("http://" + Globalvars.ip + ":8080/gettree")
+	yield(get_req, "request_completed")
+	var response_decoded = Marshalls.base64_to_utf8(Globalvars.response)
+	#print("response: " + str(response_decoded) + " endresponse")
+	var parse_result: JSONParseResult = JSON.parse(response_decoded)
+	var result = parse_result.result
+	var pos = Vector2(0, 0)
+	for root in result:
+		#print(root["rootNode"]["data"].keys())
+		#print(str(root["rootNode"]["data"]["id"]) + " " + root["rootNode"]["data"]["name"] + " " + root["rootNode"]["data"]["surname"])
+		var person = root["rootNode"]
+		#var data = {"id": person["data"]["id"], "name": person["data"]["name"], "surname": person["data"]["surname"], "birthdate": person["data"]["birthdate"], "spouse": person["data"]["spouse"], "motherName": person["data"]["motherName"], "fatherName": person["data"]["fatherName"], "bloodType": person["data"]["bloodType"], "profession": person["data"]["profession"], "maritalStatus": person["data"]["maritalStatus"], "maidenName": person["data"]["maidenName"], "gender": person["data"]["gender"]}
+		pos += Vector2(4000, 0)
+		#add_node(data, pos)
+		
+		generate_tree(person, pos)
+		
+	
+
+
+func _on_Button_pressed():
+	var get_req = requests.get_request("http://" + Globalvars.ip + ":8080/getproblemdata")
+	yield(get_req, "request_completed")
+	var response_decoded = Marshalls.base64_to_utf8(Globalvars.response)
+	print(response_decoded)
+	#print("response: " + str(response_decoded) + " endresponse")
+	var parse_result: JSONParseResult = JSON.parse(response_decoded)
+	var result = parse_result.result
+	highlight_problem(result)
+	
+	
+extends Control
+
+
+func _on_rendertree_pressed():
+	Globalvars.ip = $PanelContainer/VBoxContainer/ip.text
+	get_tree().change_scene("res://TreeView.tscn")
+	pass # Replace with function body.
+ 

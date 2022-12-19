@@ -1,11 +1,18 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://TreeView.gd" type="Script" id=1]
 [ext_resource path="res://Requests.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ViewCamera.gd" type="Script" id=3]
+[ext_resource path="res://frame.png" type="Texture" id=4]
 
 [node name="TreeView" type="Control"]
 script = ExtResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+self_modulate = Color( 0.0352941, 0.0509804, 0.384314, 1 )
+scale = Vector2( 65536, 65536 )
+z_index = -6
+texture = ExtResource( 4 )
 
 [node name="Requests" parent="." instance=ExtResource( 2 )]
 
@@ -13,4 +20,13 @@ script = ExtResource( 1 )
 current = true
 script = ExtResource( 3 )
 
+[node name="Button" type="Button" parent="ViewCamera"]
+margin_left = 853.0
+margin_top = 432.0
+margin_right = 953.0
+margin_bottom = 532.0
+text = "View Problem"
+
 [node name="Tree" type="Node2D" parent="."]
+
+[connection signal="pressed" from="ViewCamera/Button" to="." method="_on_Button_pressed"]

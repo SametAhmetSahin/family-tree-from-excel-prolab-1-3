@@ -1,7 +1,8 @@
 extends Node
 
-
 var response = ""
+
+var ip = "localhost"
 
 func setResponse(string):
 	response = string

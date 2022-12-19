@@ -6,6 +6,11 @@ export (Dictionary) var person
 export (Dictionary) var data = {"id":"id", "name":"name", "surname":"surname", "birthdate":"birthdate", "spouse":"spouse", "motherName":"motherName", "fatherName":"fatherName", "bloodType":"bloodType", "profession":"profession", "maritalStatus":"maritalStatus", "maidenName":"maidenName", "gender":"gender"}
 export (bool) var root = false
 
+func start_glow():
+	$AnimationPlayer.play("glow" +  str(int(person["data"]["gender"])))
+func stop_glow():
+	$AnimationPlayer.play("normal" + str(int(person["data"]["gender"])))
+
 func set_person(newperson):
 	person = newperson
 	update_labels()
@@ -46,13 +51,15 @@ func generate_subnodes(startpos):
 		offset += Vector2(80, 0)
 	if root:
 		if person.has("mother"):
+			print("person is root and has mother")
 			if person["mother"] != 0:
-				
+				print({"data": Globalvars.TreeView.get_person_from_id(person["mother"])})
 				var mothernode = add_node({"data": Globalvars.TreeView.get_person_from_id(person["mother"])}, Vector2(320, -150))
 				mothernode.set_parent_line(-Vector2(320, -150))
 				print("Added mother")
 				pass
-		if person.has("Father"):
+		if person.has("father"):
+			print("person is root and has father")
 			if person["father"] != 0:
 				var fathernode = add_node({"data": Globalvars.TreeView.get_person_from_id(person["father"])}, Vector2(0, -150))
 				fathernode.set_parent_line(-Vector2(0, -150))
@@ -72,6 +79,14 @@ func update_labels():
 	#mavi 00b1ff
 	if person["data"]["gender"]:
 		$Panel.self_modulate = Color("00b1ff")
+#		$AnimationPlayer.get_animation("glow").track_set_key_value(0, 0, Color("00b1ff"))
+#		$AnimationPlayer.get_animation("glow").track_set_key_value(0, 3, Color("00b1ff"))
+#		$AnimationPlayer.get_animation("normal").track_set_key_value(0, 0, Color("00b1ff"))
 	else:
 		$Panel.self_modulate = Color("f700ff")
 		$Panel/TextureRect.self_modulate = Color("ff00f5")
+#		$AnimationPlayer.get_animation("glow").track_set_key_value(0, 0, Color("f700ff"))
+#		$AnimationPlayer.get_animation("glow").track_set_key_value(0, 3, Color("f700ff"))
+#		$AnimationPlayer.get_animation("normal").track_set_key_value(0, 0, Color("f700ff"))
+		
+	

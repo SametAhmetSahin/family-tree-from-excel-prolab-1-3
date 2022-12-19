@@ -1,12 +1,113 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Node.gd" type="Script" id=1]
 [ext_resource path="res://icon.png" type="Texture" id=2]
 [ext_resource path="res://MainTheme.tres" type="Theme" id=3]
+[ext_resource path="res://frame.png" type="Texture" id=4]
+[ext_resource path="res://glow1.tres" type="Animation" id=5]
 
-[sub_resource type="StyleBoxFlat" id=1]
+[sub_resource type="StyleBoxTexture" id=1]
+texture = ExtResource( 4 )
+region_rect = Rect2( 0, 0, 260, 140 )
 
-[node name="Node" type="Node2D"]
+[sub_resource type="Animation" id=2]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=5]
+resource_name = "glow0"
+length = 4.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 2.5, 3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 0.968627, 0, 1, 1 ), Color( 0.968627, 1, 0, 1 ), Color( 0.968627, 1, 0, 1 ), Color( 0.968627, 0, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "glow1"
+length = 4.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5, 2.5, 3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0.694118, 1, 1 ), Color( 0.968627, 1, 0, 1 ), Color( 0.968627, 1, 0, 1 ), Color( 0, 0.694118, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "normal"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "normal0"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 0, 0.960784, 1 ) ]
+}
+
+[sub_resource type="Animation" id=8]
+resource_name = "normal1"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Panel:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0, 0.694118, 1, 1 ) ]
+}
+
+[node name="Node" type="Node2D" groups=["personnode"]]
 script = ExtResource( 1 )
 
 [node name="Line2D" type="Line2D" parent="."]
@@ -21,48 +122,60 @@ theme = ExtResource( 3 )
 custom_styles/panel = SubResource( 1 )
 
 [node name="TextureRect" type="TextureRect" parent="Panel"]
-margin_right = 108.0
-margin_bottom = 119.0
+margin_left = 9.0
+margin_top = 8.0
+margin_right = 103.0
+margin_bottom = 112.0
 texture = ExtResource( 2 )
 stretch_mode = 1
 
 [node name="id" type="Label" parent="Panel"]
 margin_left = 118.0
+margin_top = 12.0
 margin_right = 158.0
-margin_bottom = 14.0
+margin_bottom = 31.0
 text = "id"
 
 [node name="fullname" type="Label" parent="Panel"]
 margin_left = 118.0
-margin_top = 14.0
-margin_right = 174.0
-margin_bottom = 28.0
+margin_top = 26.0
+margin_right = 181.0
+margin_bottom = 45.0
 text = "fullname"
 
 [node name="birthdate" type="Label" parent="Panel"]
 margin_left = 118.0
-margin_top = 42.0
-margin_right = 176.0
-margin_bottom = 56.0
+margin_top = 54.0
+margin_right = 181.0
+margin_bottom = 73.0
 text = "birthdate"
 
 [node name="bloodtype" type="Label" parent="Panel"]
 margin_left = 118.0
-margin_top = 56.0
-margin_right = 182.0
-margin_bottom = 70.0
+margin_top = 68.0
+margin_right = 188.0
+margin_bottom = 87.0
 text = "bloodtype"
 
 [node name="maidenname" type="Label" parent="Panel"]
 margin_left = 118.0
-margin_top = 28.0
-margin_right = 202.0
-margin_bottom = 42.0
+margin_top = 40.0
+margin_right = 211.0
+margin_bottom = 59.0
 text = "maidenname"
 
 [node name="profession" type="Label" parent="Panel"]
 margin_left = 118.0
-margin_top = 70.0
+margin_top = 82.0
 margin_right = 202.0
-margin_bottom = 84.0
+margin_bottom = 101.0
 text = "profession"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 2 )
+anims/glow = ExtResource( 5 )
+anims/glow0 = SubResource( 5 )
+anims/glow1 = SubResource( 6 )
+anims/normal = SubResource( 4 )
+anims/normal0 = SubResource( 7 )
+anims/normal1 = SubResource( 8 )

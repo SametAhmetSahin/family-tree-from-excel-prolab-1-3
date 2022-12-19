@@ -4,10 +4,29 @@ onready var requests = $Requests
 
 onready var node_scene = preload("res://Node.tscn")
 var foundperson
+
+func highlight_problem(data):
+	
+	
+	for node in get_tree().get_nodes_in_group("personnode"):
+		node.stop_glow()
+	
+	
+	for node in get_tree().get_nodes_in_group("personnode"):
+		if typeof(data[0]) == TYPE_INT:
+			if data.has(node.person["data"]["id"]):
+				node.start_glow()
+		if typeof(data[0]) == TYPE_ARRAY:
+			for arr in data:
+				if arr[0] == node.person["data"]["id"]:
+					node.start_glow()
+	pass
+
+
 func return_person_from_id(id):
 	
 	#print("making request")
-	var get_req = requests.get_request("http://localhost:8080/getpeoplelist")
+	var get_req = requests.get_request("http://" + Globalvars.ip + ":8080/getpeoplelist")
 	yield(get_req, "request_completed")
 	var response_decoded = Marshalls.base64_to_utf8(Globalvars.response)
 	print("response decoded")
@@ -30,7 +49,7 @@ func generate_tree(person: Dictionary, startpos: Vector2):
 	#print(person["children"])
 	var rootnode = add_node(person, startpos)
 	rootnode.set_parent_line(Vector2(0, 0))
-	rootnode.root = true
+	#rootnode.root = true
 	offset += rootnode.generate_subnodes(startpos + offset)
 	offset += Vector2(320, 0)
 	for child in person["children"]:
@@ -59,7 +78,7 @@ func _ready():
 	
 	
 	
-	var get_req = requests.get_request("http://localhost:8080/gettree")
+	var get_req = requests.get_request("http://" + Globalvars.ip + ":8080/gettree")
 	yield(get_req, "request_completed")
 	var response_decoded = Marshalls.base64_to_utf8(Globalvars.response)
 	#print("response: " + str(response_decoded) + " endresponse")
@@ -80,6 +99,13 @@ func _ready():
 
 
 func _on_Button_pressed():
-	var get_req = requests.get_request("http://localhost:8080/gettree")
+	var get_req = requests.get_request("http://" + Globalvars.ip + ":8080/getproblemdata")
 	yield(get_req, "request_completed")
-	print("response: " + str(Globalvars.response) + " endresponse")
+	var response_decoded = Marshalls.base64_to_utf8(Globalvars.response)
+	print(response_decoded)
+	#print("response: " + str(response_decoded) + " endresponse")
+	var parse_result: JSONParseResult = JSON.parse(response_decoded)
+	var result = parse_result.result
+	highlight_problem(result)
+	
+	

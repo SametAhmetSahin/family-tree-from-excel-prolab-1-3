@@ -2,9 +2,9 @@ extends Node2D
 
 
 #[id, name, surname, birthdate, spouse, motherName, fatherName, bloodType, profession, maritalStatus, maidenName, gender]
-var person
-var data = {"id":"id", "name":"name", "surname":"surname", "birthdate":"birthdate", "spouse":"spouse", "motherName":"motherName", "fatherName":"fatherName", "bloodType":"bloodType", "profession":"profession", "maritalStatus":"maritalStatus", "maidenName":"maidenName", "gender":"gender"}
-var root = false
+export (Dictionary) var person
+export (Dictionary) var data = {"id":"id", "name":"name", "surname":"surname", "birthdate":"birthdate", "spouse":"spouse", "motherName":"motherName", "fatherName":"fatherName", "bloodType":"bloodType", "profession":"profession", "maritalStatus":"maritalStatus", "maidenName":"maidenName", "gender":"gender"}
+export (bool) var root = false
 
 func set_person(newperson):
 	person = newperson
@@ -27,8 +27,9 @@ func set_spouse_line(to: Vector2):
 	$Line2D.default_color = Color("ff6666")
 	#print(person["data"].keys())
 	#print(person["data"]["maritalStatus"])
-	if person["data"]["maritalStatus"] == "Bekar":
+	if ["Bekar", "Dul"].has(person["data"]["maritalStatus"]):
 		$Line2D.width = 2
+		$Line2D.default_color == Color("8205b4")
 	pass
 
 func generate_subnodes(startpos):
@@ -37,7 +38,7 @@ func generate_subnodes(startpos):
 	#print(person["spouse"])
 	for child in person["children"]:
 		var childnode = add_node(child, offset + Vector2(0, 150))
-		childnode.set_parent_line(-childnode.position)
+		childnode.set_parent_line(-childnode.position + Vector2(120, 0))
 		offset += childnode.generate_subnodes(offset) + Vector2(320, 0)
 	if person.has("spouse"):
 		var spousenode = add_node(person["spouse"], Vector2(260, 0))
@@ -45,11 +46,18 @@ func generate_subnodes(startpos):
 		offset += Vector2(80, 0)
 	if root:
 		if person.has("mother"):
-			var mothernode = add_node(person["mother"], Vector2(320, -150))
-			mothernode.set_parent_line(-Vector2(320, -150))
+			if person["mother"] != 0:
+				
+				var mothernode = add_node({"data": Globalvars.TreeView.get_person_from_id(person["mother"])}, Vector2(320, -150))
+				mothernode.set_parent_line(-Vector2(320, -150))
+				print("Added mother")
+				pass
 		if person.has("Father"):
-			var fathernode = add_node(person["father"], Vector2(0, -150))
-			fathernode.set_parent_line(-Vector2(0, -150))
+			if person["father"] != 0:
+				var fathernode = add_node({"data": Globalvars.TreeView.get_person_from_id(person["father"])}, Vector2(0, -150))
+				fathernode.set_parent_line(-Vector2(0, -150))
+				print("Added father")
+				pass
 	return offset
 
 func update_labels():
@@ -66,3 +74,4 @@ func update_labels():
 		$Panel.self_modulate = Color("00b1ff")
 	else:
 		$Panel.self_modulate = Color("f700ff")
+		$Panel/TextureRect.self_modulate = Color("ff00f5")

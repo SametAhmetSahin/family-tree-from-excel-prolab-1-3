@@ -3,6 +3,25 @@ extends Control
 onready var requests = $Requests
 
 onready var node_scene = preload("res://Node.tscn")
+var foundperson
+func return_person_from_id(id):
+	
+	#print("making request")
+	var get_req = requests.get_request("http://localhost:8080/getpeoplelist")
+	yield(get_req, "request_completed")
+	var response_decoded = Marshalls.base64_to_utf8(Globalvars.response)
+	print("response decoded")
+	#print(response_decoded)
+	#print("response: " + str(response_decoded) + " endresponse")
+	var parse_result: JSONParseResult = JSON.parse(response_decoded)
+	var result = parse_result.result
+	for person in result:
+		if person["id"] == id:
+			print("found person")
+			foundperson = person
+			break
+	
+	
 
 func generate_tree(person: Dictionary, startpos: Vector2):
 	#startpos = startpos
@@ -35,6 +54,11 @@ func wait_for_request(req):
 
 
 func _ready():
+	var resp = return_person_from_id(1)
+	yield(resp, "completed")
+	
+	
+	
 	var get_req = requests.get_request("http://localhost:8080/gettree")
 	yield(get_req, "request_completed")
 	var response_decoded = Marshalls.base64_to_utf8(Globalvars.response)

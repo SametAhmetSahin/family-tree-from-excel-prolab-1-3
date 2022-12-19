@@ -24,10 +24,12 @@ public class GetPeopleList implements HttpHandler
         // send response
         String response = "mrb";
 
-        response = Base64.getEncoder().encodeToString(Main.GetGodotTree().getBytes());
+        response = Base64.getEncoder().encodeToString(Main.GetGodotPersonData().getBytes());
         //response = Game.GetGameInfo();
 
         System.out.println("response length " + response.length());
+
+
 
         he.sendResponseHeaders(200, response.length());//response.length());
         OutputStream os = he.getResponseBody();

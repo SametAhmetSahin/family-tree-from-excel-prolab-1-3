@@ -13,3 +13,5 @@ func UpdateGameStatus():
 	var parse_result: JSONParseResult = JSON.parse(response)
 	print("parse ok")
 	print(parse_result.error == OK)
+
+onready var TreeView = get_node("/root/TreeView")

@@ -16,6 +16,7 @@ public class WebServer
         server.createContext("/get", new GetHandler());
         server.createContext("/initializegame", new InitializeGame());
         server.createContext("/gettree", new GetTree());
+        server.createContext("/getpeoplelist", new GetPeopleList());
         /*
         server.createContext("/echoHeader", new EchoHeaderHandler());
         server.createContext("/echoPost", new EchoPostHandler());

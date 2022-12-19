@@ -5,16 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0acf8e85-e675-490c-907d-0fffdb4860a4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/godot-gui/divorcedcurve.tres" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/WebServer/GetPeopleList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/MainMenu.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/MainMenu.gd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/MainMenu.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/MainMenu.tscn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/MainTheme.tres" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/MainTheme.tres" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/godot-gui/Node.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/Node.gd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/godot-gui/Node.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/Node.tscn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/godot-gui/TreeView.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/TreeView.gd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/godot-gui/globalvars.gd" beforeDir="false" afterPath="$PROJECT_DIR$/godot-gui/globalvars.gd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/WebServer/GetPeopleList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WebServer/GetPeopleList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/WebServer/WebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/WebServer/WebServer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -19,6 +19,7 @@ public class Main
     static String filePath = "test.xlsx";
     static Scanner input = new Scanner(System.in);
 
+    public static ArrayList<PersonData> peopleList;
     public static GodotData godotData = new GodotData();
     public static ArrayList<GodotFamily> godotFamilies = new ArrayList<>();
     public static int tempGenerationCounter = 0;
@@ -37,7 +38,7 @@ public class Main
             }
         }).start();
 
-        ArrayList<PersonData> peopleList = ExcelParser.parseAll(filePath);
+        peopleList = ExcelParser.parseAll(filePath);
         ArrayList<ArrayList<PersonData>> membersOfFamilies = new ArrayList<>();
         ArrayList<Family> families = new ArrayList<>();
 
@@ -73,6 +74,12 @@ public class Main
     {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return "" + gson.toJson(godotData);
+    }
+
+    public static String GetGodotPersonData()
+    {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return "" + gson.toJson(peopleList);
     }
 
     public static void FamilyTreeMenu(ArrayList<Family> families, ArrayList<PersonData> personData)
@@ -199,23 +206,23 @@ public class Main
         input.nextLine();
     }
 
-    public static void AddPersonToFamilyRecursive(Person root, Family familyToAdded, ArrayList<PersonData> peopleList)
+    public static void AddPersonToFamilyRecursive(Person root, Family familyToAdded, ArrayList<PersonData> personData)
     {
         if(root == null)
             return;
 
-        familyToAdded.AddPerson(root.data, peopleList);
+        familyToAdded.AddPerson(root.data, personData);
 
         if(root.spouse != null)
-            familyToAdded.AddPerson(root.spouse.data, peopleList);
+            familyToAdded.AddPerson(root.spouse.data, personData);
 
         for(Person child : root.children)
-            AddPersonToFamilyRecursive(child, familyToAdded, peopleList);
+            AddPersonToFamilyRecursive(child, familyToAdded, personData);
     }
 
-    public static void SetRelationOfPersonRecursive(Person somePerson, String relation, boolean isNotStart, boolean upward, boolean checkSpouse, ArrayList<PersonData> peopleList)
+    public static void SetRelationOfPersonRecursive(Person somePerson, String relation, boolean isNotStart, boolean upward, boolean checkSpouse, ArrayList<PersonData> personData)
     {
-        for(PersonData deyta : peopleList)
+        for(PersonData deyta : personData)
             if(deyta.id == somePerson.data.id)
             {
                 somePerson.data.surname = deyta.surname;
@@ -244,7 +251,7 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                SetRelationOfPersonRecursive(somePerson.spouse, relation + (somePerson.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, false, false, peopleList);
+                SetRelationOfPersonRecursive(somePerson.spouse, relation + (somePerson.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, false, false, personData);
             }
 
             relation = temp;
@@ -261,7 +268,7 @@ public class Main
                     relation += "nün ";
 
                 for (Person child : somePerson.children)
-                    SetRelationOfPersonRecursive(child, relation + (child.data.gender ? "oğlu" : "kızı"), true, false, true, peopleList);
+                    SetRelationOfPersonRecursive(child, relation + (child.data.gender ? "oğlu" : "kızı"), true, false, true, personData);
             }
         }
         else
@@ -277,7 +284,7 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                SetRelationOfPersonRecursive(somePerson.spouse, relation + (somePerson.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, true, false, peopleList);
+                SetRelationOfPersonRecursive(somePerson.spouse, relation + (somePerson.data.maritalStatus.equalsIgnoreCase("Evli") ? "eşi" : "eski eşi"), true, true, false, personData);
             }
 
             relation = temp;
@@ -293,7 +300,7 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                SetRelationOfPersonRecursive(somePerson.mother, relation + "annesi", true, true, true, peopleList);
+                SetRelationOfPersonRecursive(somePerson.mother, relation + "annesi", true, true, true, personData);
             }
 
             relation = temp;
@@ -309,7 +316,7 @@ public class Main
                 else if (relation.endsWith("ü") || relation.endsWith("ö"))
                     relation += "nün ";
 
-                SetRelationOfPersonRecursive(somePerson.father, relation + "babası", true, true, false, peopleList);
+                SetRelationOfPersonRecursive(somePerson.father, relation + "babası", true, true, false, personData);
             }
         }
 
@@ -554,9 +561,9 @@ public class Main
                 FindPeopleWithNoChildrenRecursive(person);
     }
 
-    public static PersonData GetPersonDataFromID(int ID, ArrayList<PersonData> peopleList)
+    public static PersonData GetPersonDataFromID(int ID, ArrayList<PersonData> personData)
     {
-        for(PersonData data : peopleList)
+        for(PersonData data : personData)
             if(data.id == ID)
                 return data;
 

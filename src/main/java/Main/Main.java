@@ -210,6 +210,7 @@ public class Main
         System.out.println("\n-----  Belirtilen Kişinin Soy Ağacını Göster  -----\n");
 
         problemIndex = 3;
+        godotData.familyTreeOfSpecificPerson.rootNode = null;
 
         System.out.print("Kişinin ID'sini giriniz: ");
         int wantedID = input.nextInt();

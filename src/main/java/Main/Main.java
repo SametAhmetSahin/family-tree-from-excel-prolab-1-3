@@ -16,7 +16,7 @@ import WebServer.*;
 
 public class Main
 {
-    static String filePath = "test.xlsx";
+    static String filePath = "Prolab 3 (1).xlsx";
     static Scanner input = new Scanner(System.in);
 
     public static ArrayList<PersonData> peopleList;

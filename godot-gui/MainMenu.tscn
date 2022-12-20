@@ -20,18 +20,33 @@ margin_bottom = 1073.0
 custom_constants/separation = 100
 alignment = 1
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer"]
-margin_top = 463.0
+[node name="titlelabel" type="Label" parent="PanelContainer/VBoxContainer"]
+margin_top = 342.0
 margin_right = 1906.0
-margin_bottom = 482.0
+margin_bottom = 361.0
 custom_fonts/font = ExtResource( 2 )
 text = "Soy Ağacı Sistemi"
 align = 1
 
 [node name="rendertree" type="Button" parent="PanelContainer/VBoxContainer"]
-margin_top = 582.0
+margin_top = 461.0
 margin_right = 1906.0
-margin_bottom = 602.0
+margin_bottom = 481.0
 text = "Render Tree"
+
+[node name="iplabel" type="Label" parent="PanelContainer/VBoxContainer"]
+margin_top = 581.0
+margin_right = 1906.0
+margin_bottom = 600.0
+custom_fonts/font = ExtResource( 2 )
+text = "IP Address:"
+align = 1
+
+[node name="ip" type="LineEdit" parent="PanelContainer/VBoxContainer"]
+margin_top = 700.0
+margin_right = 1906.0
+margin_bottom = 724.0
+text = "localhost"
+align = 1
 
 [connection signal="pressed" from="PanelContainer/VBoxContainer/rendertree" to="." method="_on_rendertree_pressed"]

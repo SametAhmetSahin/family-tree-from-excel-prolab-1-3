@@ -15,4 +15,4 @@ func UpdateGameStatus():
 	print("parse ok")
 	print(parse_result.error == OK)
 
-onready var TreeView = get_node("/root/TreeView")
+onready var TreeView = null

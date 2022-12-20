@@ -6,20 +6,20 @@ onready var node_scene = preload("res://Node.tscn")
 var foundperson
 
 func highlight_problem(data):
-	
-	
+	print("highlighting problem")
 	for node in get_tree().get_nodes_in_group("personnode"):
 		node.stop_glow()
-	
-	
 	for node in get_tree().get_nodes_in_group("personnode"):
-		if typeof(data[0]) == TYPE_INT:
-			if data.has(node.person["data"]["id"]):
-				node.start_glow()
+		print("for node")
 		if typeof(data[0]) == TYPE_ARRAY:
 			for arr in data:
 				if arr[0] == node.person["data"]["id"]:
 					node.start_glow()
+		elif typeof(data[0]):
+			#print("data " + str(data))
+			#print("starting glow")
+			if data.has(node.person["data"]["id"]):
+				node.start_glow()
 	pass
 
 
@@ -73,6 +73,7 @@ func wait_for_request(req):
 
 
 func _ready():
+	Globalvars.TreeView = self
 	var resp = return_person_from_id(1)
 	yield(resp, "completed")
 	

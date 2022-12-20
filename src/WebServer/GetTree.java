@@ -31,6 +31,7 @@ public class GetTree implements HttpHandler
         String response = "mrb";
 
         response = Base64.getEncoder().encodeToString(Main.GetGodotTree().getBytes());
+        
         //response = Game.GetGameInfo();
 
         System.out.println("response length " + response.length());

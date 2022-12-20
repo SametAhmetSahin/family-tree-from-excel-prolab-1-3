@@ -8,8 +8,10 @@ export (bool) var root = false
 
 func start_glow():
 	$AnimationPlayer.play("glow" +  str(int(person["data"]["gender"])))
+	print("started glow")
 func stop_glow():
 	$AnimationPlayer.play("normal" + str(int(person["data"]["gender"])))
+	print("stopped glow")
 
 func set_person(newperson):
 	person = newperson

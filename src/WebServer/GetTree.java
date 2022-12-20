@@ -34,7 +34,7 @@ public class GetTree implements HttpHandler
         
         //response = Game.GetGameInfo();
 
-        System.out.println("response length " + response.length());
+        //System.out.println("response length " + response.length());
 
         he.sendResponseHeaders(200, response.length());//response.length());
         OutputStream os = he.getResponseBody();

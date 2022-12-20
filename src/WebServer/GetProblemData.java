@@ -27,7 +27,7 @@ public class GetProblemData implements HttpHandler
         response = Base64.getEncoder().encodeToString(Main.GetGodotData().getBytes());
         //response = Game.GetGameInfo();
 
-        System.out.println("response length " + response.length());
+        //System.out.println("response length " + response.length());
 
 
 

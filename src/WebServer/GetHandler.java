@@ -30,6 +30,6 @@ public class GetHandler implements HttpHandler
 
         os.close();
 
-        System.out.println("query: " + query);
+        //System.out.println("query: " + query);
     }
 }
